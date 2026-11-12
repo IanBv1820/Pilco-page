@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pilco — Plásticos Desechables</title>
+  <meta name="description" content="Vasos, platos, cubiertos, contenedores y bolsas desechables por mayoreo y menudeo. Arma tu cotización en línea y envíala por WhatsApp.">
+  <meta name="theme-color" content="#F3F0E8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+  <a class="skip" href="#main">Saltar al contenido</a>
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+  <!-- Iconos -->
+  <svg width="0" height="0" class="sprite" aria-hidden="true">
+    <defs>
+      <symbol id="i-vasos" viewBox="0 0 64 64"><path d="M18 16h28l-4 40H22z"/><path d="M14 16h36"/><path d="M36 16l6-12"/><path d="M20 30h24"/></symbol>
+      <symbol id="i-platos" viewBox="0 0 64 64"><circle cx="32" cy="32" r="24"/><circle cx="32" cy="32" r="14"/></symbol>
+      <symbol id="i-cubiertos" viewBox="0 0 64 64"><path d="M16 8v14c0 4 3 6 6 6v28"/><path d="M22 8v12"/><path d="M28 8v14c0 4-3 6-6 6"/><path d="M42 56V8c6 4 8 14 8 24h-8"/></symbol>
+      <symbol id="i-contenedores" viewBox="0 0 64 64"><path d="M10 28h44l-4 24H14z"/><path d="M8 28l6-12h36l6 12"/><path d="M24 22h16"/></symbol>
+      <symbol id="i-bolsas" viewBox="0 0 64 64"><path d="M16 22h32l4 34H12z"/><path d="M24 22v-4a8 8 0 0 1 16 0v4"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="nav" id="nav">
+    <div class="wrap nav-row">
+      <a class="brand" href="#top" aria-label="Pilco, inicio">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">Pilco</span>
+        <span class="brand-sub">Plásticos Desechables</span>
+      </a>
+      <nav class="nav-links" id="navLinks" aria-label="Principal">
+        <a href="#catalogo">Catálogo</a>
+        <a href="#materiales">Materiales</a>
+        <a href="#proceso">Cómo pedir</a>
+        <a href="#faq">Preguntas</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="btn btn-ink btn-sm" href="#cotizar">Cotización <span class="count" id="navCount" aria-live="polite">0</span></a>
+        <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navLinks" aria-label="Abrir menú"><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow load" style="--d:0ms">Mayoreo y menudeo · Envases para tu negocio</p>
+          <h1 class="display">
+            <span class="line"><span style="--d:80ms">Desechables</span></span>
+            <span class="line"><span style="--d:170ms">que <em>sí</em> aguantan</span></span>
+            <span class="line"><span style="--d:260ms">el servicio.</span></span>
+          </h1>
+          <p class="lead load" style="--d:420ms">Vasos, platos, cubiertos, contenedores y bolsas para restaurantes, eventos y comercios. Elige tus productos, arma la cotización y envíala en un minuto.</p>
+          <div class="hero-cta load" style="--d:520ms">
+            <a class="btn btn-accent" href="#cotizar">Armar cotización <svg class="ico"><use href="#i-arrow"/></svg></a>
+            <a class="btn btn-ghost" href="#catalogo">Ver catálogo</a>
+          </div>
+          <ul class="hero-facts load" style="--d:620ms">
+            <li><strong>5</strong> líneas de producto</li>
+            <li><strong>4</strong> materiales a elegir</li>
+            <li><strong>0</strong> compromiso al cotizar</li>
+          </ul>
+        </div>
+
+        <div class="hero-art load" style="--d:300ms" id="heroArt" aria-hidden="true">
+          <div class="art-disc"></div>
+          <svg class="badge" viewBox="0 0 200 200">
+            <defs><path id="circ" d="M100 100m-78 0a78 78 0 1 1 156 0a78 78 0 1 1-156 0"/></defs>
+            <text><textPath href="#circ">GRADO ALIMENTICIO · RECICLABLE · GRADO ALIMENTICIO · RECICLABLE · </textPath></text>
+          </svg>
+          <svg class="scene" viewBox="0 0 520 560" fill="none">
+            <defs>
+              <clipPath id="cupClip"><path d="M172 170h176l-24 300a14 14 0 0 1-14 12H210a14 14 0 0 1-14-12z"/></clipPath>
+            </defs>
+            <!-- contenedor -->
+            <g class="px" data-depth="14"><g class="float f2">
+              <path class="shape s-paper" d="M24 372h188l-14 92a12 12 0 0 1-12 10H50a12 12 0 0 1-12-10z"/>
+              <path class="shape s-lime" d="M14 372l22-58a10 10 0 0 1 9-6h146a10 10 0 0 1 9 6l22 58z"/>
+              <path class="stroke" d="M84 340h68"/>
+              <path class="stroke thin" d="M52 404h132M56 432h124"/>
+            </g></g>
+            <!-- vaso -->
+            <g class="px" data-depth="28"><g class="float f1">
+              <path class="straw" d="M282 176L330 22"/>
+              <path class="shape s-clear" d="M172 170h176l-24 300a14 14 0 0 1-14 12H210a14 14 0 0 1-14-12z"/>
+              <g clip-path="url(#cupClip)">
+                <g class="liquid">
+                  <path d="M120 250c30-16 60 16 90 0s60-16 90 0 60 16 90 0 60-16 90 0v260H120z"/>
+                </g>
+                <circle class="bubble b1" cx="230" cy="450" r="7"/>
+                <circle class="bubble b2" cx="268" cy="460" r="5"/>
+                <circle class="bubble b3" cx="298" cy="446" r="9"/>
+                <circle class="bubble b4" cx="246" cy="470" r="4"/>
+              </g>
+              <path class="stroke" d="M172 170h176l-24 300a14 14 0 0 1-14 12H210a14 14 0 0 1-14-12z"/>
+              <path class="shape s-paper" d="M186 150c10-62 138-62 148 0z"/>
+              <rect class="shape s-ink" x="158" y="148" width="204" height="26" rx="10"/>
+              <path class="stroke thin light" d="M196 214l14 220"/>
+            </g></g>
+            <!-- plato + tenedor -->
+            <g class="px" data-depth="44"><g class="float f3">
+              <ellipse class="shape s-accent" cx="420" cy="430" rx="84" ry="84"/>
+              <ellipse class="stroke light" cx="420" cy="430" rx="54" ry="54"/>
+              <g transform="rotate(24 430 300)">
+                <path class="shape s-ink" d="M410 196h8v52h8v-52h8v52h8v-52h8v64a20 20 0 0 1-12 18v110a8 8 0 0 1-16 0V278a20 20 0 0 1-12-18z"/>
+              </g>
+            </g></g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <div class="marquee-set"><span>Vasos</span><i></i><span>Platos</span><i></i><span>Cubiertos</span><i></i><span>Contenedores</span><i></i><span>Bolsas</span><i></i><span>Tapas</span><i></i><span>Bandejas</span><i></i></div>
+        <div class="marquee-set"><span>Vasos</span><i></i><span>Platos</span><i></i><span>Cubiertos</span><i></i><span>Contenedores</span><i></i><span>Bolsas</span><i></i><span>Tapas</span><i></i><span>Bandejas</span><i></i></div>
+      </div>
+    </div>
+
+    <!-- CATÁLOGO -->
+    <section class="section" id="catalogo">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow reveal">Catálogo</p>
+          <h2 class="title reveal" style="--i:1">Todo lo que sale de tu cocina, bien empacado.</h2>
+        </div>
+        <div class="filters reveal" style="--i:2" role="group" aria-label="Filtrar catálogo por línea" id="filters"></div>
+        <div class="grid" id="grid"></div>
+      </div>
+    </section>
+
+    <!-- MATERIALES -->
+    <section class="section dark" id="materiales">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow reveal">Materiales</p>
+          <h2 class="title reveal" style="--i:1">No todo plástico sirve para lo mismo.</h2>
+          <p class="sub reveal" style="--i:2">Elige el material según lo que vas a servir. El número es su código de identificación de resina para reciclaje.</p>
+        </div>
+        <div class="mat reveal" style="--i:3">
+          <div class="mat-tabs" role="tablist" aria-label="Materiales" id="matTabs"></div>
+          <div class="mat-panel" role="tabpanel" id="matPanel" tabindex="0" aria-live="polite">
+            <div class="mat-code" aria-hidden="true">
+              <svg viewBox="0 0 120 120"><path class="tri" d="M60 14l44 78H16z"/></svg>
+              <span id="matNum">5</span>
+            </div>
+            <div class="mat-body">
+              <h3 id="matName"></h3>
+              <p id="matDesc"></p>
+              <dl class="meters" id="matMeters"></dl>
+              <p class="mat-use"><span>Ideal para</span> <b id="matUse"></b></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROCESO -->
+    <section class="section" id="proceso">
+      <div class="wrap process">
+        <div class="section-head sticky-head">
+          <p class="eyebrow reveal">Cómo pedir</p>
+          <h2 class="title reveal" style="--i:1">De la lista al mostrador en cuatro pasos.</h2>
+          <a class="btn btn-ink reveal" style="--i:2" href="#cotizar">Empezar cotización <svg class="ico"><use href="#i-arrow"/></svg></a>
+        </div>
+        <ol class="steps" id="steps">
+          <li class="rail" aria-hidden="true"><span id="railFill"></span></li>
+          <li class="step reveal"><span class="num">01</span><h3>Elige productos</h3><p>Filtra el catálogo por línea y agrega lo que necesitas a tu cotización con un clic.</p></li>
+          <li class="step reveal"><span class="num">02</span><h3>Ajusta cantidades</h3><p>Indica cuántas cajas o paquetes requieres. Tu lista se guarda en este dispositivo.</p></li>
+          <li class="step reveal"><span class="num">03</span><h3>Envía por WhatsApp</h3><p>Generamos el mensaje con tu pedido completo. Solo presiona enviar.</p></li>
+          <li class="step reveal"><span class="num">04</span><h3>Recibe tu precio</h3><p>Te confirmamos existencias, precio por volumen y opciones de entrega.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- RECICLAJE -->
+    <section class="section band">
+      <div class="wrap band-grid">
+        <h2 class="title reveal">Úsalo una vez.<br>Recíclalo bien.</h2>
+        <ul class="tips">
+          <li class="reveal"><b>Enjuaga</b><span>Un envase sin restos de comida sí entra al reciclaje.</span></li>
+          <li class="reveal" style="--i:1"><b>Separa</b><span>Busca el número en la base: 1 PET, 5 PP, 6 PS.</span></li>
+          <li class="reveal" style="--i:2"><b>Compacta</b><span>Apila vasos y aplasta envases para ocupar menos espacio.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- COTIZAR -->
+    <section class="section" id="cotizar">
+      <div class="wrap quote">
+        <div class="section-head">
+          <p class="eyebrow reveal">Cotización</p>
+          <h2 class="title reveal" style="--i:1">Tu pedido, listo para enviar.</h2>
+          <p class="sub reveal" style="--i:2">Sin registro y sin compromiso. Revisa tu lista y mándala por WhatsApp.</p>
+        </div>
+        <form class="quote-card reveal" style="--i:2" id="quoteForm" novalidate>
+          <div class="quote-list">
+            <h3>Productos <span class="muted" id="quoteTotal"></span></h3>
+            <ul id="quoteItems"></ul>
+            <div class="empty" id="quoteEmpty">
+              <p><b>Tu cotización está vacía.</b><br>Agrega productos desde el catálogo para empezar.</p>
+              <a class="btn btn-ghost btn-sm" href="#catalogo">Ir al catálogo</a>
+            </div>
+          </div>
+          <div class="quote-fields">
+            <div class="field">
+              <label for="fName">Nombre o negocio</label>
+              <input id="fName" name="name" type="text" autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="fCity">Ciudad de entrega</label>
+              <input id="fCity" name="city" type="text" autocomplete="address-level2">
+            </div>
+            <div class="field">
+              <label for="fNotes">Notas <span class="muted">(opcional)</span></label>
+              <textarea id="fNotes" name="notes" rows="3" placeholder="Ej. impresión con logotipo, fecha de entrega"></textarea>
+            </div>
+            <p class="form-msg" id="formMsg" role="status"></p>
+            <div class="quote-actions">
+              <button class="btn btn-accent" type="submit">Enviar por WhatsApp <svg class="ico"><use href="#i-arrow"/></svg></button>
+              <button class="btn btn-ghost" type="button" id="copyBtn">Copiar pedido</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="wrap faq">
+        <div class="section-head">
+          <p class="eyebrow reveal">Preguntas frecuentes</p>
+          <h2 class="title reveal" style="--i:1">Antes de pedir.</h2>
+        </div>
+        <div class="faq-list">
+          <details class="reveal"><summary>¿Cuál es el pedido mínimo?<span class="plus" aria-hidden="true"></span></summary><div class="ans"><p>Vendemos por paquete y por caja cerrada. A mayor volumen, mejor precio por pieza; indícalo en tu cotización.</p></div></details>
+          <details class="reveal"><summary>¿Qué material resiste el microondas?<span class="plus" aria-hidden="true"></span></summary><div class="ans"><p>El polipropileno (PP, código 5) es el indicado para alimentos calientes y recalentado. PET y PS son para alimentos fríos o a temperatura ambiente.</p></div></details>
+          <details class="reveal"><summary>¿Pueden imprimir mi logotipo?<span class="plus" aria-hidden="true"></span></summary><div class="ans"><p>Escríbelo en las notas de tu cotización junto con la cantidad aproximada y te decimos qué productos lo admiten.</p></div></details>
+          <details class="reveal"><summary>¿Hacen entregas?<span class="plus" aria-hidden="true"></span></summary><div class="ans"><p>Indica tu ciudad al cotizar y te confirmamos las opciones de entrega o recolección disponibles.</p></div></details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p class="footer-big" aria-hidden="true">Pilco</p>
+      <div class="footer-row">
+        <p>© <span id="year"></span> Pilco · Plásticos Desechables</p>
+        <nav aria-label="Pie de página"><a href="#catalogo">Catálogo</a><a href="#materiales">Materiales</a><a href="#cotizar">Cotizar</a><a href="#top">Volver arriba</a></nav>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
