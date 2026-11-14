@@ -1,0 +1,7 @@
+# Solo se sube lo que necesita la página publicada
+/*
+!/index.html
+!/img/
+!/.gitignore
+!/.nojekyll
+!/README.md
