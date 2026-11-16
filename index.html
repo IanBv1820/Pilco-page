@@ -3082,7 +3082,8 @@ html.night .ix-v-side{background:#2C323B}
       if(/papel/.test(n)) return "img/fundas-papel-foto.webp";
       return "img/fundas-plastico-foto.webp";
     }
-    if(/aluminio|botella/.test(n)) return "";
+    if(/botella/.test(n)){ var bm = /(\d+)\s*ml/i.exec(m); return bm && BT_INFO[+bm[1]] ? "img/botellas/c" + bm[1] + ".webp" : ""; } /* fotos de Blender (16 nov 2026) */
+    if(/aluminio/.test(n)) return "";
     if(/plato/.test(n)) return /\bpc\b/.test(n) ? "img/plato-pc.webp" : /compartid/.test(n + " " + norm(m)) ? "img/plato-compartido.webp" : "img/plato-llano.webp";
     if(/lonchera/.test(n + " " + norm(m))) return "img/cont-lonchera.webp";
     if(/contenedor/.test(n)) return "img/linea-cont-pop.webp";
@@ -4721,6 +4722,109 @@ html.night .ix-v-side{background:#2C323B}
     save(); renderCart(); flyToCart(btn);
     toast("Agregado: " + (ctv.bk && ctv.B ? bkText(ctv.bko.n, ctv.bko.s, ctv.B.w, it.units[0]) + " de" : q + " " + unitWord(it.units[0], q) + " ·") + " " + (ctv.cfg.word.toLowerCase() + " " + ctLab(it).toLowerCase()).trim() + (col ? " " + col.toLowerCase() : "") + ".");
   }
+  /* ---------- Botellas (Ian, 16 nov 2026): una botella a la vez, con fotos de estudio hechas en Blender desde sus fotos ----------
+     Izquierda: la foto (img/botellas/d{ml}.webp, 60-120 KB; solo se baja la elegida y sus vecinas). Tocarla la acerca 2,2× donde tocaste, sin seguir al dedo.
+     Derecha: el mismo panel que Contenedores (tamaño, precio, por bulto, cantidad y carrito). Medidas: alto medido por Ian (250 ml = 15 cm) y el resto por foto y capacidad. */
+  var BT_INFO = {250: {alto: 150, diam: 52.7, d: "Escudos arriba y casitas abajo"}, 300: {alto: 185, diam: 54.6, d: "Cintura con paneles de puntitos para el agarre"},
+    360: {alto: 209, diam: 55.0, d: "Escudos y casitas altas en punta"}, 400: {alto: 203, diam: 56.4, d: "Hojas en espiral"}, 500: {alto: 219, diam: 60.9, d: "Hojas en espiral"},
+    1000: {alto: 285, diam: 81.2, d: "Panal de abejas y hojas en espiral"}};
+  var btv = {ml: 500, q: 1, bk: false, bko: {n: 1, s: 0}};
+  function btMl(it){ var x = /(\d+)\s*ml/i.exec(it.m || ""); return x ? +x[1] : 0; }
+  function btNom(ml){ return ml >= 1000 ? "1 litro" : ml + " ml"; }
+  function btCm(mm){ return dec(mm / 10, 1) + " cm"; }
+  function btItems(){ var o = {}; ITEMS.forEach(function(it){ if(it.p.cat === "Botellas" && it.rows){ var ml = btMl(it); if(BT_INFO[ml]) o[ml] = it; } }); return o; }
+  function btPre(ml){ if(BT_INFO[ml]){ var im = new Image(); im.src = "img/botellas/d" + ml + ".webp"; } }
+  function renderBotellas(){
+    var I = btItems(), mls = Object.keys(I).map(Number).sort(function(a, b){ return a - b; }); if(!mls.length) return false;
+    if(!I[btv.ml]) btv.ml = I[500] ? 500 : mls[0];
+    btv.I = I; btv.mls = mls; btv.q = 1; btv.bk = false; btv.bko = {n: 1, s: 0};
+    if(window.ctMount) window.ctMount(null);
+    $("cat-empty").hidden = true;
+    $("cat-grid").innerHTML = '<section class="pgroup vt btv">'+LINES_BTN
+      + '<div class="pg-head"><h3>Botellas</h3><p>Elige el tamaño. Toca la botella para verla de cerca.</p></div>'
+      + '<div class="vt-grid"><div class="vt-left">'
+      + '<div class="vt-stage bt-stage" id="bt-stage" role="button" tabindex="0" aria-label="Ver la botella de cerca"><img class="bt-foto bt-on" alt="" width="1080" height="1800" decoding="async"><img class="bt-foto" alt="" width="1080" height="1800" decoding="async"><span class="vt-badge" id="bt-badge"></span><span class="bt-pista">Toca para acercar</span></div></div>'
+      + '<div class="vt-panel"><div><div class="vt-name"><h3 id="bt-nm"></h3><span id="bt-ml"></span></div><p class="vt-uso" id="bt-uso"></p></div>'
+      + '<div><p class="vt-lbl">Tamaño</p><div class="vt-chips" id="bt-tams">'+mls.map(function(ml){ return '<button type="button" data-btm="'+ml+'" aria-pressed="'+(ml === btv.ml)+'">'+btNom(ml)+'</button>'; }).join("")+'</div></div>'
+      + '<div class="vt-price"><b id="bt-pr"></b><span id="bt-pk"></span></div>'
+      + '<div id="bt-bkbox" hidden></div>'
+      + '<div class="vt-buy"><div class="cq" id="bt-qbox" role="group" aria-label="Cantidad"><button type="button" data-btq="-1" aria-label="Menos">−</button><input class="qin" id="bt-q" type="text" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off" value="1" aria-label="Cantidad"><button type="button" data-btq="1" aria-label="Más">+</button></div>'
+      + '<button type="button" class="btn btn-primary" id="bt-add">'+CART_SVG+'Agregar al carrito</button></div>'
+      + '<button type="button" class="bk-link" id="bt-bkl" data-btbk="1" hidden></button>'
+      + '<p class="vt-note">Precios referenciales, sujetos a cambios. Fotos hechas en 3D a partir de las botellas reales.</p></div></div></section>';
+    $("cat-count").textContent = mls.length + " tamaños" + (CATALOGO_FECHA ? " · precios actualizados al " + CATALOGO_FECHA : "");
+    var sec = $("cat-grid").querySelector(".btv");
+    sec.addEventListener("click", btClick);
+    $("bt-q").addEventListener("change", function(){ btQ(0); });
+    sec.addEventListener("change", function(ev){ var x = ev.target; if(x.dataset && x.dataset.bbx && x.dataset.bki){ btv.bko[x.dataset.bki] = parseInt(x.value, 10) || 0; btBkPaint(); } });
+    $("bt-stage").addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); btZoom(null); } else if(e.key === "Escape") btZoom(false); });
+    btInfo(); btFoto(true);
+    return true;
+  }
+  function btFoto(first){
+    var st = $("bt-stage"); if(!st) return; btZoom(false);
+    var on = st.querySelector(".bt-foto.bt-on"), off = st.querySelector(".bt-foto:not(.bt-on)"), ml = btv.ml, src = "img/botellas/d" + ml + ".webp", alt = "Botella PET de " + btNom(ml);
+    var vec = function(){ var i = btv.mls.indexOf(ml); btPre(btv.mls[i - 1]); btPre(btv.mls[i + 1]); };
+    if(first){ on.alt = alt; on.onload = function(){ setTimeout(vec, 800); }; on.src = src; return; }
+    off.onload = function(){ if(btv.ml !== ml) return; off.classList.add("bt-on"); on.classList.remove("bt-on"); vec(); };
+    off.alt = alt; off.src = src;
+  }
+  function btZoom(e){
+    var st = $("bt-stage"); if(!st) return;
+    var fotos = st.querySelectorAll(".bt-foto"), img = st.querySelector(".bt-foto.bt-on");
+    if(e === false || st.classList.contains("bt-zoom")){ st.classList.remove("bt-zoom"); Array.prototype.forEach.call(fotos, function(i){ i.style.transform = ""; }); return; }
+    var r = img.getBoundingClientRect(), x = e ? (e.clientX - r.left) / r.width * 100 : 50, y = e ? (e.clientY - r.top) / r.height * 100 : 45;
+    img.style.transformOrigin = Math.max(0, Math.min(100, x)) + "% " + Math.max(0, Math.min(100, y)) + "%"; img.style.transform = "scale(2.2)"; st.classList.add("bt-zoom");
+  }
+  function btRow(it){ return it.rows.filter(function(r){ return !r.out; })[0] || null; }
+  function btInfo(){
+    var it = btv.I[btv.ml], r = btRow(it), inf = BT_INFO[btv.ml], pres = (r && r.pres) || it.p.pres || "";
+    $("bt-nm").textContent = "Botella " + btNom(btv.ml);
+    $("bt-ml").textContent = pres;
+    $("bt-uso").textContent = "PET transparente, boca de rosca de 28 mm. " + inf.d + ". Alto " + btCm(inf.alto) + " · diámetro " + btCm(inf.diam) + ".";
+    $("bt-badge").innerHTML = "<b>" + esc(btNom(btv.ml)) + "</b> · " + esc(btCm(inf.alto)) + " de alto";
+    Array.prototype.forEach.call(document.querySelectorAll("#bt-tams [data-btm]"), function(b){ b.setAttribute("aria-pressed", String(+b.dataset.btm === btv.ml)); });
+    $("bt-pr").textContent = !r ? "Sin stock" : typeof r.p === "number" ? fmt(r.p) : "Consultar";
+    $("bt-pk").textContent = pres ? "por " + pres.toLowerCase() : "precio referencial";
+    $("bt-q").value = btv.q;
+    $("bt-add").disabled = !r;
+    btv.B = r ? bkOf(it, it.p.info[r.v]) : null; if(!btv.B) btv.bk = false;
+    btBkPaint();
+  }
+  function btBkPaint(){
+    var B = btv.B, it = btv.I[btv.ml], L0 = $("bt-bkl"); if(!L0) return;
+    var u = function(n){ return unitWord(it.units[0], n); };
+    L0.hidden = !B; if(B) L0.textContent = btv.bk ? "Volver a " + u(2) : "¿Prefieres por " + B.w + "? · 1 " + B.w + " = " + B.pb + " " + u(B.pb);
+    $("bt-qbox").hidden = btv.bk; $("bt-bkbox").hidden = !btv.bk;
+    if(!btv.bk || !B) return;
+    var tot = bkFix(btv.bko, B.pb);
+    $("bt-bkbox").innerHTML = bkCtrl('data-bbx="1"', btv.bko.n, btv.bko.s, B.w);
+    $("bt-pr").textContent = B.may !== null ? fmt(round2(B.may * tot)) : "Consultar";
+    $("bt-pk").textContent = bkText(btv.bko.n, btv.bko.s, B.w, it.units[0]) + (btv.bko.n ? " (" + tot + " " + u(tot) + ")" : "") + " · " + (B.may !== null ? "precio mayorista" : "precio mayorista en la proforma");
+  }
+  function btQ(n){ var x = $("bt-q"); btv.q = Math.max(1, Math.min(9999, (parseInt(String(x.value).replace(/\D/g, ""), 10) || 1) + n)); x.value = btv.q; if(n){ void x.offsetWidth; x.classList.add("pop"); setTimeout(function(){ x.classList.remove("pop"); }, 300); } }
+  function btClick(ev){
+    var t = ev.target, b;
+    if((b = t.closest("[data-btm]"))){ var ml = +b.dataset.btm; if(ml === btv.ml) return; btv.ml = ml; btv.q = 1; btv.bk = false; btv.bko = {n: 1, s: 0}; btInfo(); btFoto(false); return; }
+    if(t.closest("#bt-stage")){ btZoom(ev); return; }
+    if((b = t.closest("[data-btbk]"))){ btv.bk = !btv.bk; btv.bko = {n: 1, s: 0}; btInfo(); return; }
+    if((b = t.closest("[data-bbx][data-bkd]"))){ if(!btv.B) return; var bk = b.dataset.bkd, bv = +b.dataset.bkv;
+      if(bk === "s" && bv < 0 && !btv.bko.s && btv.bko.n > 1){ btv.bko.n--; btv.bko.s = btv.B.pb - 1; } else btv.bko[bk] = Math.max(0, (btv.bko[bk] || 0) + bv);
+      btBkPaint(); refocus('[data-bbx][data-bkd="'+bk+'"][data-bkv="'+bv+'"]'); return; }
+    if((b = t.closest("[data-btq]"))){ btQ(+b.dataset.btq); return; }
+    if((b = t.closest("#bt-add"))){ btAdd(b); return; }
+  }
+  function btAdd(btn){
+    var it = btv.I[btv.ml], g = findGroup(it.key), q = btv.q, nl;
+    if(btv.bk && btv.B){ nl = newLine(it); nl.qty = bkFix(btv.bko, btv.B.pb); nl.bk = {n: btv.bko.n, s: btv.bko.s, w: btv.B.w, pb: btv.B.pb}; if(g) g.lines.push(nl); else cart.push({key: it.key, lines: [nl]}); }
+    else {
+      var ln = g && g.lines.filter(function(l){ return !l.qtys && !l.bk && l.unit === it.units[0]; })[0];
+      if(ln) ln.qty = Math.min(9999, (ln.qty || 0) + q);
+      else { nl = newLine(it); nl.qty = q; if(g) g.lines.push(nl); else cart.push({key: it.key, lines: [nl]}); }
+    }
+    save(); renderCart(); flyToCart(btn);
+    toast("Agregado: " + (btv.bk && btv.B ? bkText(btv.bko.n, btv.bko.s, btv.B.w, it.units[0]) + " de" : q + " " + unitWord(it.units[0], q) + " ·") + " botella " + btNom(btv.ml) + ".");
+  }
   function renderPapel(g){
     var L = ppBuild(g); if(!L.length) return false;
     ppm.list = L;
@@ -5514,6 +5618,7 @@ html.night .ix-v-side{background:#2C323B}
     if(catFilter === "Tarrinas" && !q && subSel && TV[subSel]){ renderTarrinas(); return; } /* v143 */
     if(catFilter === "Cubiertos" && !q && renderCubiertos()) return; /* v173 */
     if(catFilter === "Sorbetes" && !q && renderSorbetes()) return; /* v184 */
+    if(catFilter === "Botellas" && !q && renderBotellas()) return; /* Ian (16 nov 2026): una botella a la vez, fotos de Blender */
     var nivel = NIVEL[catFilter] && !q;
     if(nivel && !subSel){
       var mats = PRODUCTS.filter(function(p){ return p.cat === catFilter && p.rows; });
@@ -7392,6 +7497,20 @@ html.night{--pp-edge:rgba(143,162,255,.5);--pp-lift:0 1px 2px rgba(0,0,0,.3),0 1
 #view-catalogo .ct-stage[data-fondo="grafito"],html.night #view-catalogo .ct-stage[data-fondo="grafito"]{border:0;background:radial-gradient(120% 95% at 50% 30%,#3B403E 0,#222625 52%,#151817 100%)}
 #view-catalogo .ct-stage[data-fondo="grafito"] .vt-badge,html.night #view-catalogo .ct-stage[data-fondo="grafito"] .vt-badge{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.26);color:rgba(255,255,255,.78)}
 #view-catalogo .ct-stage[data-fondo="grafito"] .vt-badge b,html.night #view-catalogo .ct-stage[data-fondo="grafito"] .vt-badge b{color:#fff}
+/* ===== Botellas (Ian, 16 nov 2026): vitrina de una en una con fotos de estudio hechas en Blender (Escritorio/Contenedor/botellas/detalle.py).
+   Negro en la base y se aclara hacia arriba (Ian); los lados del mostrador repiten el degradado del borde de la foto. Tocar acerca la botella, sin seguir al dedo. ===== */
+#view-catalogo .bt-stage,html.night #view-catalogo .bt-stage{border:0;cursor:zoom-in;-webkit-tap-highlight-color:transparent;background:linear-gradient(180deg,#a9adb0 0,#a4a9ac 10%,#9ca0a4 20%,#8d9296 30%,#787e83 40%,#5a5f62 50%,#363a3d 60%,#101213 70%,#020202 75%,#000 80%,#000 90%,#121416 100%)}
+#view-catalogo .bt-stage.bt-zoom{cursor:zoom-out}
+/* la foto va centrada a todo el alto; sus bordes se funden con el degradado del mostrador (no se nota el rectángulo) */
+#cat-grid .bt-foto{position:absolute;top:0;bottom:0;left:0;right:0;margin:0 auto;height:100%;width:auto;max-width:none;opacity:0;transition:opacity .3s ease,transform .35s cubic-bezier(.2,.8,.2,1);user-select:none;-webkit-user-drag:none;
+  -webkit-mask-image:linear-gradient(90deg,transparent 2%,#000 22%,#000 78%,transparent 98%);mask-image:linear-gradient(90deg,transparent 2%,#000 22%,#000 78%,transparent 98%)}
+#cat-grid .bt-foto.bt-on{opacity:1}
+#view-catalogo .bt-stage .vt-badge,html.night #view-catalogo .bt-stage .vt-badge{background:rgba(255,255,255,.6);border-color:rgba(0,0,0,.08);color:#2B2F33}
+#view-catalogo .bt-stage .vt-badge b,html.night #view-catalogo .bt-stage .vt-badge b{color:#111}
+#view-catalogo .bt-pista{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:4;font-size:.78rem;color:rgba(255,255,255,.75);background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:4px 10px;white-space:nowrap;pointer-events:none;transition:opacity .2s ease}
+#view-catalogo .bt-stage.bt-zoom .bt-pista{opacity:0}
+#view-catalogo .bt-stage:focus-visible{outline:2px solid #2446F5;outline-offset:3px}
+@media (prefers-reduced-motion:reduce){#cat-grid .bt-foto{transition:opacity .2s ease}}
 </style>
 <script>
 /* v211: título de la portada en palabras (para el golpe) y la cortina entre pantallas */
