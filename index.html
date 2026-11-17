@@ -1753,7 +1753,11 @@ html.night .ix-v-side{background:#2C323B}
           <p class="ix-eyebrow">Visítanos en Quito</p>
           <h2 class="ix-addr ix-rv ix-mask" id="ix-h-visita"><span class="ix-l"><span>Av. Lizardo Ruiz</span></span> <span class="ix-l ix-l2"><span>y Díaz Arias.</span></span></h2>
         </div>
-        <p class="ix-note">Busca el edificio esquinero de 3 pisos, naranja con gris. Tu pedido te espera listo.</p>
+        <!-- Ian (16 nov 2026): mini mapa de Google en el bloque verde, con marco (mapa incrustado: gratis, sin clave de API; se carga al acercarse) -->
+        <figure class="ix-minimap">
+          <div class="ix-mm-in"><iframe title="Ubicación de Pilco&amp;Pilco en Google Maps" src="https://maps.google.com/maps?q=Av.%20Lizardo%20Ruiz%20y%20D%C3%ADaz%20Arias%2C%20Quito%2C%20Ecuador&amp;z=16&amp;hl=es&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
+          <figcaption><span class="ix-mm-dot" aria-hidden="true"></span>Aquí estamos · Av. Lizardo Ruiz y Díaz Arias</figcaption>
+        </figure>        <p class="ix-note">Busca el edificio esquinero de 3 pisos, naranja con gris. Tu pedido te espera listo.</p>
       </div>
       <div class="ix-v-side">
         <dl>
@@ -1766,8 +1770,7 @@ html.night .ix-v-side{background:#2C323B}
           <a class="ix-btn ix-main" href="https://share.google/LeiLcmxHuOvIv3H3n" target="_blank" rel="noopener">Cómo llegar</a>
           <a class="ix-btn ix-ghost" href="https://wa.me/593998861867?text=Hola%20Pilco%26Pilco%2C%20tengo%20una%20consulta" target="_blank" rel="noopener">Escribir por WhatsApp</a>
         </div>
-        <!-- Ian (16 nov 2026): mini mapa de Google (mapa incrustado: gratis, sin clave de API). Se carga solo cuando se acerca a la pantalla (loading="lazy") -->
-        <div class="ix-minimap"><iframe title="Ubicación de Pilco&amp;Pilco en Google Maps" src="https://maps.google.com/maps?q=Av.%20Lizardo%20Ruiz%20y%20D%C3%ADaz%20Arias%2C%20Quito%2C%20Ecuador&amp;z=16&amp;hl=es&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
+
       </div>
     </section>
 <script>/* v200/v206: Vitrina — palabras que se encienden en «Para quién» y chat que se escribe solo (sin más movimiento) */
@@ -7516,9 +7519,11 @@ html.night{--pp-edge:rgba(143,162,255,.5);--pp-lift:0 1px 2px rgba(0,0,0,.3),0 1
 #view-catalogo .bt-stage:focus-visible{outline:2px solid #2446F5;outline-offset:3px}
 @media (prefers-reduced-motion:reduce){#cat-grid .bt-foto{transition:opacity .2s ease}}
 /* Mini mapa en «Visítanos» (Ian, 16 nov 2026) */
-.ix-minimap{margin-top:20px;border-radius:18px;overflow:hidden;border:1px solid var(--line);height:clamp(200px,28vw,260px);background:var(--surface)}
+.ix-minimap{margin:0;max-width:640px;width:100%;background:#0E1110;border-radius:26px;padding:8px 8px 0;box-shadow:0 18px 40px -18px rgba(14,17,16,.55)}
+.ix-mm-in{border-radius:19px;overflow:hidden;height:clamp(220px,26vw,300px);background:#E8E6DF}
 .ix-minimap iframe{display:block;width:100%;height:100%;border:0}
-html.night .ix-minimap iframe{filter:brightness(.82) saturate(.85)}
+.ix-minimap figcaption{display:flex;align-items:center;gap:10px;padding:12px 12px 13px;color:#F3F0E8!important;font-size:.95rem;font-weight:600}
+.ix-mm-dot{width:10px;height:10px;border-radius:50%;background:#C9F24E;box-shadow:0 0 0 4px rgba(201,242,78,.22);flex:none}
 /* Inicio (Ian, 16 nov 2026: «mucho espacio en blanco, pega más las cosas»): menos aire entre el carrusel y «Nuestras líneas» */
 section.ix.ix-promos{padding-bottom:clamp(8px,1.5vw,16px)}
 section.ix.ix-lines{padding-top:clamp(20px,3vw,36px)}
