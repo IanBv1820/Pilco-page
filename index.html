@@ -4751,14 +4751,14 @@ html.night .ix-v-side{background:#2C323B}
       + '<div class="pg-head"><h3>Botellas</h3><p>Elige el tamaño. Toca la botella para verla de cerca.</p></div>'
       + '<div class="vt-grid"><div class="vt-left">'
       + '<div class="vt-stage bt-stage" id="bt-stage" role="button" tabindex="0" aria-label="Ver la botella de cerca"><img class="bt-foto bt-on" alt="" width="1080" height="1800" decoding="async"><img class="bt-foto" alt="" width="1080" height="1800" decoding="async"><span class="vt-badge" id="bt-badge"></span><span class="bt-pista">Toca para acercar</span></div></div>'
-      + '<div class="vt-panel"><div><div class="vt-name"><h3 id="bt-nm"></h3><span id="bt-ml"></span></div><p class="vt-uso" id="bt-uso"></p></div>'
+      + '<div class="vt-panel"><div><div class="vt-name"><h3 id="bt-nm"></h3><span id="bt-ml"></span></div></div>'
       + '<div><p class="vt-lbl">Tamaño</p><div class="vt-chips" id="bt-tams">'+mls.map(function(ml){ return '<button type="button" data-btm="'+ml+'" aria-pressed="'+(ml === btv.ml)+'">'+btNom(ml)+'</button>'; }).join("")+'</div></div>'
       + '<div class="vt-price"><b id="bt-pr"></b><span id="bt-pk"></span></div>'
       + '<div id="bt-bkbox" hidden></div>'
       + '<div class="vt-buy"><div class="cq" id="bt-qbox" role="group" aria-label="Cantidad"><button type="button" data-btq="-1" aria-label="Menos">−</button><input class="qin" id="bt-q" type="text" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off" value="1" aria-label="Cantidad"><button type="button" data-btq="1" aria-label="Más">+</button></div>'
       + '<button type="button" class="btn btn-primary" id="bt-add">'+CART_SVG+'Agregar al carrito</button></div>'
       + '<button type="button" class="bk-link" id="bt-bkl" data-btbk="1" hidden></button>'
-      + '<p class="vt-note">Precios referenciales, sujetos a cambios. Fotos hechas en 3D a partir de las botellas reales.</p></div></div></section>';
+      + '</div></div></section>'; /* Ian (17 nov 2026): sin descripción ni nota debajo */
     $("cat-count").textContent = mls.length + " tamaños" + (CATALOGO_FECHA ? " · precios actualizados al " + CATALOGO_FECHA : "");
     var sec = $("cat-grid").querySelector(".btv");
     sec.addEventListener("click", btClick);
@@ -4788,7 +4788,6 @@ html.night .ix-v-side{background:#2C323B}
     var it = btv.I[btv.ml], r = btRow(it), inf = BT_INFO[btv.ml], pres = (r && r.pres) || it.p.pres || "";
     $("bt-nm").textContent = "Botella " + btNom(btv.ml);
     $("bt-ml").textContent = pres;
-    $("bt-uso").textContent = "PET transparente, boca de rosca de 28 mm. " + inf.d + ". Alto " + btCm(inf.alto) + " · diámetro " + btCm(inf.diam) + ".";
     $("bt-badge").innerHTML = "<b>" + esc(btNom(btv.ml)) + "</b> · " + esc(btCm(inf.alto)) + " de alto";
     Array.prototype.forEach.call(document.querySelectorAll("#bt-tams [data-btm]"), function(b){ b.setAttribute("aria-pressed", String(+b.dataset.btm === btv.ml)); });
     $("bt-pr").textContent = !r ? "Sin stock" : typeof r.p === "number" ? fmt(r.p) : "Consultar";
@@ -7521,6 +7520,11 @@ html.night{--pp-edge:rgba(143,162,255,.5);--pp-lift:0 1px 2px rgba(0,0,0,.3),0 1
 /* ===== Encabezado negro (Ian, 16 nov 2026: «mucho beige»; eligió negro, como el pie). Se redefinen los colores solo dentro de .top ===== */
 header.top,html.night header.top,body.on-inicio header.top{--ink:#F3F0E8;--muted:rgba(243,240,232,.66);--surface:#1B1F1E;--line:rgba(243,240,232,.18);--bg:#0E1110;--sky:#8FA2FF;--sky-soft:rgba(143,162,255,.14);
   background:#0E1110!important;border-bottom-color:#0E1110!important;color:#F3F0E8}
+/* Contador de cantidad (Ian, 17 nov 2026: «el color del número no me convence»): de noche la casilla era café y en el iPhone el número salía oscuro.
+   Ahora la casilla va del mismo tono que los botones − / + y el número siempre en el color del texto (también en Safari) */
+.cq input.qin{-webkit-text-fill-color:currentColor;opacity:1;caret-color:currentColor}
+html.night #view-catalogo .cq input.qin,html.night #view-pedido .cq input.qin{background:#1B1F1E;color:#F3F0E8}
+html.night #view-catalogo .cq,html.night #view-pedido .cq{border-color:rgba(243,240,232,.18)}
 /* Mini mapa en «Visítanos» (Ian, 16 nov 2026) */
 .ix-minimap{margin:0;max-width:640px;width:100%;background:#0E1110;border-radius:26px;padding:8px 8px 0;box-shadow:0 18px 40px -18px rgba(14,17,16,.55)}
 .ix-mm-in{border-radius:19px;overflow:hidden;height:clamp(220px,26vw,300px);background:#E8E6DF}
