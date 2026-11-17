@@ -1635,34 +1635,7 @@ html.night .ix-v-side{background:#2C323B}
       </div>
     </section>
 
-    <!-- Ian (16 nov 2026): el carrusel de destacados va justo debajo de la portada -->
-    <section class="ix ix-promos" aria-label="Destacados">
-      <div class="ix-wrap">
-<div class="bnr-car" id="bnr-car" role="region" aria-roledescription="carrusel" aria-label="Destacados"><div class="bnr-track" id="bnr-track"><section class="cup-feature" id="bnr-0" role="group" aria-roledescription="banner" aria-label="1 de 4" data-i="0"><img class="cup-feature-photo" src="img/banner-vasos.webp" width="1942" height="809" alt="" decoding="async"><div class="cup-feature-copy"><h2>Tu vaso,<br>a tu medida.</h2><p>De ½ a 32 oz.</p><button class="btn cup-feature-cta" type="button" data-hot="vitrina:vasos-plastico-pet">Explorar vasos <span aria-hidden="true">→</span></button></div></section><section class="cup-feature" id="bnr-1" role="group" aria-roledescription="banner" aria-label="2 de 4" data-i="1"><img class="cup-feature-photo" src="img/banner-portacomidas.webp" width="1942" height="809" alt="" decoding="async"><div class="cup-feature-copy"><h2>Listo para<br>llevar.</h2><p>Portacomidas y loncheras para tus almuerzos.</p><button class="btn cup-feature-cta" type="button" data-hot="cat:Platos y portacomidas">Ver portacomidas <span aria-hidden="true">→</span></button></div></section><section class="cup-feature" id="bnr-2" role="group" aria-roledescription="banner" aria-label="3 de 4" data-i="2"><img class="cup-feature-photo" src="img/banner-fundas.webp" width="1942" height="809" alt="" decoding="async"><div class="cup-feature-copy"><h2>Una funda para<br>cada venta.</h2><p>Colores y medidas, por libra o paquete.</p><button class="btn cup-feature-cta" type="button" data-hot="cat:Fundas">Ver fundas <span aria-hidden="true">→</span></button></div></section><section class="cup-feature" id="bnr-3" role="group" aria-roledescription="banner" aria-label="4 de 4" data-i="3"><img class="cup-feature-photo" src="img/banner-tarrinas.webp" width="1942" height="809" alt="" decoding="async"><div class="cup-feature-copy"><h2>Fresco y<br>a la vista.</h2><p>Tarrinas transparentes con tapa.</p><button class="btn cup-feature-cta" type="button" data-hot="cat:Tarrinas">Ver tarrinas <span aria-hidden="true">→</span></button></div></section></div><div class="bnr-dots" id="bnr-dots"><button type="button" aria-label="Ver banner 1" data-bnr="0" aria-current="true"></button><button type="button" aria-label="Ver banner 2" data-bnr="1"></button><button type="button" aria-label="Ver banner 3" data-bnr="2"></button><button type="button" aria-label="Ver banner 4" data-bnr="3"></button></div></div>
-<script>/* v158: carrusel de banners — cambia solo cada 5 s, se desliza con el dedo, se pausa al tocarlo o pasar el mouse */
-(function(){
-  var tr=document.getElementById("bnr-track"), dots=document.getElementById("bnr-dots"), car=document.getElementById("bnr-car");
-  if(!tr) return; var n=tr.children.length, cur=0, hold=0;
-  function idx(){ return Math.max(0, Math.min(n-1, Math.round(tr.scrollLeft/Math.max(1,tr.clientWidth)))); }
-  function mark(i){ cur=i; Array.prototype.forEach.call(dots.children,function(d,k){ if(k===i) d.setAttribute("aria-current","true"); else d.removeAttribute("aria-current"); }); }
-  function goTo(i){ tr.scrollTo({left:i*tr.clientWidth, behavior:"smooth"}); mark(i); }
-  var st; tr.addEventListener("scroll",function(){ clearTimeout(st); st=setTimeout(function(){ mark(idx()); },80); },{passive:true});
-  dots.addEventListener("click",function(e){ var b=e.target.closest("[data-bnr]"); if(!b) return; hold=Date.now(); goTo(+b.dataset.bnr); });
-  ["pointerdown","touchstart","focusin","wheel"].forEach(function(ev){ car.addEventListener(ev,function(){ hold=Date.now(); },{passive:true}); });
-  var over=false; car.addEventListener("mouseenter",function(){ over=true; }); car.addEventListener("mouseleave",function(){ over=false; hold=Date.now(); });
-  window.addEventListener("resize",function(){ tr.scrollLeft=cur*tr.clientWidth; });
-  var calm=false; try{ calm=matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){}
-  if(calm) return;
-  setInterval(function(){
-    if(over || document.hidden || !car.offsetParent || Date.now()-hold<8000) return;
-    var r=car.getBoundingClientRect(); if(r.bottom<0 || r.top>innerHeight) return;
-    goTo((idx()+1)%n);
-  },5000);
-})();
-</script>
-      </div>
-    </section>
-
+    <!-- Ian (17 nov 2026): se quitó el carrusel de destacados («no le veo un lugar»); copia en respaldo/carrusel-destacados.html -->
     <section class="ix ix-lines" id="lineas" aria-labelledby="ix-h-lineas">
       <div class="ix-wrap">
         <div class="ix-head ix-rv">
