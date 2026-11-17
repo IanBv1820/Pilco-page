@@ -7513,6 +7513,9 @@ html.night{--pp-edge:rgba(143,162,255,.5);--pp-lift:0 1px 2px rgba(0,0,0,.3),0 1
 #view-catalogo .bt-stage.bt-zoom .bt-pista{opacity:0}
 #view-catalogo .bt-stage:focus-visible{outline:2px solid #2446F5;outline-offset:3px}
 @media (prefers-reduced-motion:reduce){#cat-grid .bt-foto{transition:opacity .2s ease}}
+/* Inicio (Ian, 16 nov 2026: «mucho espacio en blanco, pega más las cosas»): menos aire entre el carrusel y «Nuestras líneas» */
+section.ix.ix-promos{padding-bottom:clamp(8px,1.5vw,16px)}
+section.ix.ix-lines{padding-top:clamp(20px,3vw,36px)}
 /* ===== Carrito del encabezado en el celular (Ian, 16 nov 2026: «el color del carrito está medio raro»): era un cuadro negro con un carrito
    relleno hecho con clip-path. Ahora es un círculo como la lupa y el tema, con el carrito de línea de la barra de abajo y el contador en limón. ===== */
 @media (max-width:760px){
