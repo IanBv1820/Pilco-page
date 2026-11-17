@@ -1656,7 +1656,7 @@ html.night .ix-v-side{background:#2C323B}
           </a>
           <a class="ix-tile ix-rv" href="#catalogo" data-go="catalogo" data-cat="Fundas">
             <h3>Fundas</h3><p>Naturales, polifán, papel y chequeras.</p><span class="ix-go">Ver fundas <i>→</i></span>
-            <div class="ix-pic"><img src="img/inicio/fundas.webp" alt="Tres fundas de papel kraft de distintos tamaños con pan" width="1254" height="1254" loading="lazy" decoding="async"></div>
+            <div class="ix-pic"><img src="img/linea-fundas-pop.webp" alt="Fundas plásticas amarilla, azul y roja" width="900" height="874" loading="lazy" decoding="async"></div><!-- Ian (16 nov 2026): fundas plásticas aquí; la foto del pan pasó a «Fundas de papel» -->
           </a>
           <a class="ix-tile ix-rv" href="#catalogo" data-go="catalogo" data-cat="Cubiertos">
             <h3>Cubiertos</h3><p>Cucharas, tenedores y cuchillos.</p><span class="ix-go">Ver cubiertos <i>→</i></span>
@@ -3689,7 +3689,7 @@ html.night .ix-v-side{background:#2C323B}
     if(fnav.lvl === "root"){
       html = '<section class="pgroup">'+LINES_BTN+bnr({kicker: "Línea de productos", title: "Fundas", desc: "Elige el tipo de funda.", img: LINE_IMG["Fundas"], chips: ["Paquetes de 100", "Descuento por cantidad"]})+'<div class="grid mini">'
         + (plas.length ? navCard("plastico", "Fundas de plástico", FUNDA_DESC.plastico, '<img class="cut" src="img/fundas-plastico-foto.webp" alt="Fundas de plástico" loading="lazy">', "Ver tipos") : '')
-        + otras.map(function(p){ return navCard("p:" + p.id, p.name, FUNDA_DESC[p.id] || p.desc, /* v169–v170 (Ian): fotos de Ian en las tarjetas de haladeras, papel y quintaleras/arroberas */ /haladera/i.test(p.name) ? '<img class="cut" src="img/fundas-haladeras-foto.webp" alt="'+esc(p.name)+'" loading="lazy">' : isPapel(p) ? '<img class="cut" src="img/fundas-papel-foto.webp" alt="'+esc(p.name)+'" loading="lazy">' : /quintal|arrober/i.test(p.name) ? '<img class="cut" src="img/fundas-arroberas-foto.webp" alt="'+esc(p.name)+'" loading="lazy">' : ART["Fundas"], "Ver medidas"); }).join("")
+        + otras.map(function(p){ return navCard("p:" + p.id, p.name, FUNDA_DESC[p.id] || p.desc, /* v169–v170 (Ian): fotos de Ian en las tarjetas de haladeras, papel y quintaleras/arroberas */ /haladera/i.test(p.name) ? '<img class="cut" src="img/fundas-haladeras-foto.webp" alt="'+esc(p.name)+'" loading="lazy">' : isPapel(p) ? '<img class="cut" src="img/inicio/fundas.webp" alt="'+esc(p.name)+' con pan" loading="lazy">' : /quintal|arrober/i.test(p.name) ? '<img class="cut" src="img/fundas-arroberas-foto.webp" alt="'+esc(p.name)+'" loading="lazy">' : ART["Fundas"], "Ver medidas"); }).join("")
         + '</div></section>';
       count = (plas.length ? 1 : 0) + otras.length + " tipos";
     } else if(fnav.lvl === "plastico"){
