@@ -42,7 +42,9 @@ html.night ::selection{background:rgba(242,150,63,.35)}
 html.night .toast{background:#2A2236;color:#ECE7F4;border:1px solid #3A3048}
 html.night .toast button{background:#F2963F;color:#1B0F04}
 /* el cambio de turno: transición suave solo cuando cambia con la página abierta */
-html.night-switch,html.night-switch *{transition:background-color .9s ease,color .9s ease,border-color .9s ease,fill .9s ease !important}
+/* Ian (19 nov 2026: «el cambio de modo se lagea, no es instantáneo»): antes cada elemento de la página cambiaba de color en 0,9 s (miles de transiciones a la vez).
+   Ahora el cambio es instantáneo y, durante ese momento, nada más anima */
+html.night-switch,html.night-switch *,html.night-switch *::before,html.night-switch *::after{transition:none !important}
 @media (prefers-reduced-motion: reduce){html.night-switch,html.night-switch *{transition:none !important}}
 </style><script>
 /* v80: modo noche — se decide antes de pintar la página para que no parpadee */
@@ -57,7 +59,7 @@ html.night-switch,html.night-switch *{transition:background-color .9s ease,color
   function apply(){
     var n = want(); if(n === h.classList.contains("night")) return;
     h.classList.add("night-switch"); h.classList.toggle("night", n);
-    setTimeout(function(){ h.classList.remove("night-switch"); }, 1000);
+    setTimeout(function(){ h.classList.remove("night-switch"); }, 120);
   }
   if(want()) h.classList.add("night");
   setInterval(apply, 30000);
