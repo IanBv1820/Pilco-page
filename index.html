@@ -3300,7 +3300,15 @@ html.night .ix-v-side{background:#2C323B}
     if(g) return {on: false, many: true};
     var pb = pendBk[it.key]; return pb && pb.on ? {on: true, o: pb} : {on: false};
   }
+  /* Ian (19 nov 2026): en su navegador no salían la cantidad ni «Agregar al carrito» en las fundas. Si algo guardado en el carrito
+     está dañado y hace fallar este bloque, se quita ese producto del carrito y se vuelve a dibujar (antes se quedaba vacío) */
   function addArea(it, cls){
+    try{ return addArea0(it, cls); }catch(e){
+      try{ console.warn("carrito dañado, se limpia", it && it.key, e); cart = cart.filter(function(g){ return g.key !== it.key; }); save(); return addArea0(it, cls); }
+      catch(e2){ return addBtn(it, cls); }
+    }
+  }
+  function addArea0(it, cls){
     if(!withQty(it)) return addBtn(it, cls);
     var s = cqState(it), t = tierOfItem(it), hint = "", B = fBk(it), S = B ? fBkState(it) : null;
     if(t && s.unit === it.units[0]){
