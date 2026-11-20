@@ -7497,7 +7497,9 @@ header.top,html.night header.top,body.on-inicio header.top{--ink:#F3F0E8;--muted
   background:#0E1110!important;border-bottom-color:#0E1110!important;color:#F3F0E8}
 /* Mostradores fijos (Ian, 17 nov 2026: «la imagen baja con el scroll y después se queda quieta»): ya no se pegan arriba al bajar, quedan en su lugar */
 #view-catalogo .vt-left,#view-catalogo .fm-left,#view-catalogo .fmed-left,#view-catalogo .cb-left,#view-catalogo .pmenu .pm-stage.art{position:relative!important;top:auto!important}
-/* Contador de cantidad (Ian, 17 nov 2026: «el color del número no me convence»): de noche la casilla era café y en el iPhone el número salía oscuro.
+/* Ian (19 nov 2026: «no sale el botón para elegir cuántas unidades comprar»): en laptops el mostrador cuadrado empujaba la cantidad y «Agregar al carrito»
+   debajo del borde de la pantalla. En PC el mostrador ahora toma el alto que queda libre, para que precio, cantidad y botón entren sin bajar */
+@media (min-width:761px){#view-catalogo .fmenu .fm-stage.art{aspect-ratio:auto;height:clamp(240px,calc(100svh - 360px),400px)}}/* Contador de cantidad (Ian, 17 nov 2026: «el color del número no me convence»): de noche la casilla era café y en el iPhone el número salía oscuro.
    Ahora la casilla va del mismo tono que los botones − / + y el número siempre en el color del texto (también en Safari) */
 .cq input.qin{-webkit-text-fill-color:currentColor;opacity:1;caret-color:currentColor}
 html.night #view-catalogo .cq input.qin,html.night #view-pedido .cq input.qin{background:#1B1F1E;color:#F3F0E8}
