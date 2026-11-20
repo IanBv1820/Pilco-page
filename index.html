@@ -310,8 +310,8 @@ section.band .wrap{padding-block:64px}
 .mprice .na{font-size:.92rem;color:var(--ink);font-weight:600}
 .card.mc .btn{padding:10px 12px;font-size:.9rem}
 .card.mc .btn.in{background:var(--mint);color:var(--mint-ink)}
-.addarea{display:flex;flex-direction:column;gap:8px;margin-top:auto}
-.addarea .btn{margin-top:0;width:100%}
+.cqbox{display:flex;flex-direction:column;gap:8px;margin-top:auto}
+.cqbox .btn{margin-top:0;width:100%}
 .cq-row{display:flex;align-items:center;gap:4px 10px;flex-wrap:wrap}
 .cq{display:flex;align-items:stretch;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);flex:1 1 120px;max-width:180px;height:40px}
 .cq button{border:0;background:var(--bg);width:38px;font-size:1.15rem;cursor:pointer;color:var(--ink);font-family:var(--body)}
@@ -1316,9 +1316,9 @@ html.night .hmenu{--hv-bg:#191724;--hv-line:#354155;--hv-ink:#eef2fa;--hv-mut:#a
 .hmenu .cq button:hover:not(:disabled){background:var(--hv-qty-h);color:var(--hv-qty-ink)}
 .hmenu .cq input.qin{flex:none;width:112px;background:var(--hv-qty-in);color:var(--hv-ink);font-size:19px;font-weight:600}
 .hmenu .cq-u{font-size:15px;color:var(--hv-mut)}
-.hmenu .addarea .btn-primary{min-height:58px;border-radius:15px;font-size:16px;background:var(--hv-acc);color:var(--hv-on);box-shadow:none;filter:none}
-.hmenu .addarea .btn-primary:hover{background:var(--hv-acc-h)}
-.hmenu .addarea .btn svg{width:20px;height:20px}
+.hmenu .cqbox .btn-primary{min-height:58px;border-radius:15px;font-size:16px;background:var(--hv-acc);color:var(--hv-on);box-shadow:none;filter:none}
+.hmenu .cqbox .btn-primary:hover{background:var(--hv-acc-h)}
+.hmenu .cqbox .btn svg{width:20px;height:20px}
 @media (min-width:1500px){.hmenu .hm-stage{height:540px}}
 @media (max-width:1050px){.hm-stamp>span{font-size:100px}.hmenu .pm-n small{font-size:11px}.hmenu .hm-c span{font-size:12px}.hmenu .pm-t{font-size:27px}}
 @media (max-width:760px){
@@ -1335,7 +1335,7 @@ html.night .hmenu{--hv-bg:#191724;--hv-line:#354155;--hv-ink:#eef2fa;--hv-mut:#a
  .hmenu .hm-c span{font-size:13px}
  .hmenu .pm-t{font-size:28px}.hmenu .pm-t small{font-size:15px}.hmenu .hm-note{font-size:13px}
  .hmenu .pm-price span{font-size:14px}
- .hmenu .addarea .btn-primary{font-size:15px;min-height:55px}}
+ .hmenu .cqbox .btn-primary{font-size:15px;min-height:55px}}
 @media (max-width:380px){.hmenu .hm-stage{height:480px}.hm-stamp>span{font-size:80px}.hmenu .pm-n small{font-size:9px}.hm-scap{font-size:9px}.hm-view-foot{padding-inline:14px}.hm-pagination{gap:4px}.hmenu .pm-price span{font-size:12px}.hmenu .cq input.qin{width:84px}}
 @media (prefers-reduced-motion:reduce){.hm-stamp,.hm-dot,.hmenu .pm-n,.hmenu .hm-arr{transition:none}.hmenu .pm-n:hover{transform:none}}
 </style>
@@ -3332,11 +3332,11 @@ html.night .ix-v-side{background:#2C323B}
       row = bkCtrl('data-fbx="'+esc(it.key)+'"', S.o.n, S.o.s, B.w) + '<p class="cq-u">'+esc(bkText(S.o.n, S.o.s, B.w, it.units[0]))+' = '+tot+' paquetes'+(S.g ? ' en tu carrito' : '')+'</p>';
       hint = B.may !== null ? 'A precio mayorista: <b>'+fmt(round2(B.may * tot))+'</b>' : 'Precio mayorista en la proforma'; }
     var lnk = B && !S.many ? '<button type="button" class="bk-link" data-fbk="'+esc(it.key)+'">'+(S.on ? 'Volver a paquetes' : '¿Prefieres por '+B.w+'? · 1 '+B.w+' = '+B.pb+' paquetes')+'</button>' : '';
-    return '<div class="addarea" data-addarea="'+esc(it.key)+'">'+row+(hint ? '<p class="cq-hint">'+hint+'</p>' : '')+addBtn(it, cls)+lnk+'</div>';
+    return '<div class="cqbox" data-cqbox="'+esc(it.key)+'">'+row+(hint ? '<p class="cq-hint">'+hint+'</p>' : '')+addBtn(it, cls)+lnk+'</div>';
   }
   function refreshAdd(key){
     var it = ITEM[key]; if(!it) return;
-    document.querySelectorAll('[data-addarea]').forEach(function(el){ if(el.dataset.addarea === key) el.outerHTML = addArea(it); });
+    document.querySelectorAll('[data-cqbox]').forEach(function(el){ if(el.dataset.cqbox === key) el.outerHTML = addArea(it); });
   }
   /* v87: mostrario de fundas haladeras (idea de Ian). Todas en fila, a escala real, sobre una sola hoja milimetrada.
      Al abrir queda la S-2; los botones de tamaño hacen girar el mostrario hasta esa funda; también se arrastra con el dedo.
@@ -5880,7 +5880,7 @@ html.night .ix-v-side{background:#2C323B}
       var s = cqState(cit), nq = Math.max(1, Math.min(9999, s.q + parseInt(cqb.dataset.cq, 10)));
       if(s.g){ s.g.lines[0].qty = nq; save(); renderCart(); } else pend[ck] = nq;
       refreshAdd(ck);
-      var again = document.querySelector('[data-addarea="'+ck.replace(/"/g, '\\"')+'"] [data-cq="'+cqb.dataset.cq+'"]'); if(again && !again.disabled) again.focus();
+      var again = document.querySelector('[data-cqbox="'+ck.replace(/"/g, '\\"')+'"] [data-cq="'+cqb.dataset.cq+'"]'); if(again && !again.disabled) again.focus();
       var pq = document.querySelector('.pmenu [data-cqin="'+ck.replace(/"/g, '\\"')+'"], .fmenu [data-cqin="'+ck.replace(/"/g, '\\"')+'"]'); if(pq){ void pq.offsetWidth; pq.classList.add("pop"); }
       return;
     }
