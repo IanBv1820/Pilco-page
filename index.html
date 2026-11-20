@@ -46,7 +46,16 @@ html.night .toast button{background:#F2963F;color:#1B0F04}
    Ahora el cambio es instantáneo y, durante ese momento, nada más anima */
 html.night-switch,html.night-switch *,html.night-switch *::before,html.night-switch *::after{transition:none !important}
 @media (prefers-reduced-motion: reduce){html.night-switch,html.night-switch *{transition:none !important}}
+/* Ian (19 nov 2026, video): al recargar se veían por un instante piezas sin estilo (una lupa gigante, «Encuentra tu producto», todo medio transparente).
+   La página es grande y parte de su CSS está al final: no se muestra hasta que todo está leído y armado */
+html.cargando body{visibility:hidden}
 </style><script>
+/* se muestra la página recién cuando está completa (y, por si algo falla, a los 3 s de todos modos) */
+(function(){ var h = document.documentElement; h.classList.add("cargando");
+  function listo(){ setTimeout(function(){ h.classList.remove("cargando"); }, 0); }
+  if(document.readyState !== "loading") listo(); else document.addEventListener("DOMContentLoaded", listo);
+  setTimeout(function(){ h.classList.remove("cargando"); }, 3000); })();
+</script><script>
 /* v80: modo noche — se decide antes de pintar la página para que no parpadee */
 (function(){
   function sec(){ try{ var o = {}; new Intl.DateTimeFormat("en-US", {timeZone: "America/Guayaquil", hour12: false, hour: "2-digit", minute: "2-digit"}).formatToParts(new Date()).forEach(function(p){ o[p.type] = p.value; }); return (+o.hour % 24)*60 + +o.minute; }catch(e){ var d = new Date(); return d.getHours()*60 + d.getMinutes(); } }
