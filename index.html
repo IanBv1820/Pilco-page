@@ -5676,7 +5676,8 @@ html.night .ix-v-side{background:#2C323B}
     /* Ian (17 nov 2026: «se ven muy falsas»): la natural ahora es plástico hecho en Blender (Escritorio/Contenedor/fundas/funda_natural.py),
        con transparencia real: se dibuja SOLA, sin el degradado azulado, la boca ni el contorno dibujados (real: true). Antes: img/tex-natural.webp */
     natural: {src: "img/tex-natural-3d.webp", w: 600, h: 1200, top: 30, bot: 1140, real: true},
-    polifan: {src: "img/tex-polifan.webp", w: 400, h: 524, top: 10, bot: 509},
+    /* Ian (21 nov 2026): la versión gris azulada, más gruesa, va en polifán; la natural es más delgada y arrugada. Antes: img/tex-polifan.webp */
+    polifan: {src: "img/tex-polifan-3d.webp", w: 600, h: 1200, top: 30, bot: 1140, real: true},
     chequera: {src: "img/tex-chequera.webp", w: 400, h: 690, top: 14, bot: 649},
     rollo: {src: "img/tex-rollo.webp", w: 400, h: 732, top: 22, bot: 699}
   };
@@ -7529,7 +7530,7 @@ html.night{--pp-edge:rgba(143,162,255,.5);--pp-lift:0 1px 2px rgba(0,0,0,.3),0 1
 /* ===== Encabezado negro (Ian, 16 nov 2026: «mucho beige»; eligió negro, como el pie). Se redefinen los colores solo dentro de .top ===== */
 header.top,html.night header.top,body.on-inicio header.top{--ink:#F3F0E8;--muted:rgba(243,240,232,.66);--surface:#1B1F1E;--line:rgba(243,240,232,.18);--bg:#0E1110;--sky:#8FA2FF;--sky-soft:rgba(143,162,255,.14);
   background:#0E1110!important;border-bottom-color:#0E1110!important;color:#F3F0E8}
-/* Funda natural de Blender (17 nov 2026; con más presencia el 21 nov 2026: gris azulado, pliegues y costuras marcados): sombra suave en el borde, como una funda real sobre la mesa */
+/* Funda natural de Blender (17 nov 2026; 21 nov 2026: natural delgada con arrugas finas, polifán gris azulada con costuras marcadas): sombra suave en el borde, como una funda real sobre la mesa */
 #view-catalogo svg.bag .bag-real{filter:drop-shadow(0 0 1.5px rgba(40,55,70,.35)) drop-shadow(0 2px 3px rgba(40,55,70,.18))}
 html.night #view-catalogo svg.bag .bag-real{filter:drop-shadow(0 2px 4px rgba(0,0,0,.45))}
 /* Mostradores fijos (Ian, 17 nov 2026: «la imagen baja con el scroll y después se queda quieta»): ya no se pegan arriba al bajar, quedan en su lugar */
