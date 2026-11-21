@@ -5680,7 +5680,8 @@ html.night .ix-v-side{background:#2C323B}
        Ian aprobó (21 nov 2026) la funda natural renderizada en Blender (Escritorio/Contenedor/fundas/funda_natural_3d.py, webp con a_pagina_natural.py):
        plana 6×12", malla 3D con arrugas finas tipo celofán, muy transparente, sin unión visible (sin franja de sellado ni líneas de borde).
        Recortada al borde de la funda (3 px de margen) para que llene la medida; se dibuja entera estirada (entera: true), sin pedazos; top = boca, bot = donde va el sellado. Antes: img/tex-natural.webp (400×566, top 20, bot 546) */
-    natural: {src: "img/tex-natural-render.webp", w: 572, h: 1104, top: 4, bot: 1042, real: true, entera: true},
+    /* 21 nov 2026 (noche): Ian pidió más brillo y eligió su foto de plástico arrugado (493×740): fondo gris → transparente, brillos blancos opacos. Antes: img/tex-natural-render.webp */
+    natural: {src: "img/tex-natural-foto.webp", w: 493, h: 740, top: 0, bot: 740, real: true, entera: true},
     /* Ian (21 nov 2026): la versión gris azulada, más gruesa, va en polifán; la natural es más delgada y arrugada. Antes: img/tex-polifan.webp */
     polifan: {src: "img/tex-polifan-3d.webp", w: 600, h: 1200, top: 30, bot: 1140, real: true},
     chequera: {src: "img/tex-chequera.webp", w: 400, h: 690, top: 14, bot: 649},
@@ -7537,6 +7538,11 @@ html.night{--pp-edge:rgba(143,162,255,.5);--pp-lift:0 1px 2px rgba(0,0,0,.3),0 1
 header.top,html.night header.top,body.on-inicio header.top{--ink:#F3F0E8;--muted:rgba(243,240,232,.66);--surface:#1B1F1E;--line:rgba(243,240,232,.18);--bg:#0E1110;--sky:#8FA2FF;--sky-soft:rgba(143,162,255,.14);
   background:#0E1110!important;border-bottom-color:#0E1110!important;color:#F3F0E8}
 /* Funda natural de Blender (17 nov 2026; 21 nov 2026: natural delgada con arrugas finas, polifán gris azulada con costuras marcadas): sombra suave en el borde, como una funda real sobre la mesa */
+/* Ian (21 nov 2026): naturales y polifán (fundas de plástico real, transparentes) con mostrador oscuro de día: en el beige no se apreciaban */
+html:not(.night) #view-catalogo .art:has(svg.bag .bag-real){background:linear-gradient(180deg,#3A4047,#1F2327);border-color:#2C3136}
+html:not(.night) #view-catalogo .art:has(svg.bag .bag-real) .stk-rule :is(.sr-l,.sr-t,.sr-b){stroke:#FFFFFF}
+html:not(.night) #view-catalogo .art:has(svg.bag .bag-real) .stk-rule .sr-n{fill:#FFFFFF;fill-opacity:.45}
+html:not(.night) #view-catalogo .art:has(svg.bag .bag-real) .bag .bk-dim line{stroke:#8FA2FF;stroke-opacity:.6}
 #view-catalogo svg.bag .bag-real{filter:drop-shadow(0 0 1.5px rgba(40,55,70,.35)) drop-shadow(0 2px 3px rgba(40,55,70,.18))}
 html.night #view-catalogo svg.bag .bag-real{filter:drop-shadow(0 2px 4px rgba(0,0,0,.45))}
 /* Mostradores fijos (Ian, 17 nov 2026: «la imagen baja con el scroll y después se queda quieta»): ya no se pegan arriba al bajar, quedan en su lugar */
