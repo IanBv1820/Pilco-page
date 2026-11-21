@@ -1021,6 +1021,9 @@ svg.noin .bag-in{animation:none}
 .fm-left{position:sticky;top:calc(var(--hh,72px) + 16px);display:flex;flex-direction:column;min-width:0}
 .fmenu .fm-buy{margin-top:14px;border-top:0;padding-top:0}
 .fmenu .pm-side .fm-buy{margin-top:22px;max-width:420px}
+/* 21 nov 2026 (Ian): en el menú por libras la información, el color y las libras van dentro de un marco, como el panel de los vasos */
+.fmenu .fm-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+.fmenu .fm-card .lbnote{margin-bottom:0}
 .fm-stage > svg{width:100%;height:100%;display:block}
 .fmenu .fm-form{margin-top:14px}
 .fmenu .lbnote{margin:6px 0 0;font-size:.78rem;color:var(--muted)}
@@ -3809,10 +3812,10 @@ html.night .ix-v-side{background:#2C323B}
     return '<div class="fmenu" data-mode="'+mode+'">'
       + '<div class="fm-left"><div class="fm-stage art" id="fm-art"></div>'
       + (mode === "libra" ? '' : buy) + '</div>'
-      + '<div class="pm-side">'
+      + '<div class="pm-side">' + (mode === "libra" ? '<div class="fm-card">' : '')
       + '<div class="pm-info" aria-live="polite"><h3 class="pm-t" id="fm-t"></h3><p class="pm-use" id="fm-lbinfo"></p><ul class="mfacts" id="fm-facts"></ul></div>'
       + '<div class="fm-cw" id="fm-cw" hidden><p class="pm-lab">Color</p><div class="seg fm-c" id="fm-c" role="radiogroup" aria-label="Color"></div></div>'
-      + (mode === "libra" ? lbs + buy : search + lbs + '<p class="pm-lab">Todas las medidas</p>' + table)
+      + (mode === "libra" ? lbs + '</div>' + buy : search + lbs + '<p class="pm-lab">Todas las medidas</p>' + table)
       + '</div></div>';
   }
   /* la funda nueva arranca con el tamaño de la anterior y se acomoda con un rebote */
