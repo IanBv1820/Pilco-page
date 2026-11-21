@@ -1009,6 +1009,10 @@ svg.noin .bag-in{animation:none}
 .fm-lbs.big .fm-lb{min-height:56px;font-size:.95rem}
 .fmenu[data-mode=libra] .stk-stage svg.bag{width:100%;height:100%;display:block}
 .fmenu .fm-cw{margin:12px 0 2px}.fmenu .fm-ph{visibility:hidden}.fmenu .fm-cw .pm-lab{margin:0 0 6px}.fmenu .fm-c{max-width:360px}
+.fmenu .fm-c span{display:flex;align-items:center;justify-content:center;gap:8px}
+/* Ian: el círculo multicolor entero, sin borde de otro color (antes el fondo se repetía bajo el borde y asomaba un aro amarillo) */
+.fmenu .fm-c .vt-sw[data-c="color"]{border:0;width:18px;height:18px;background:conic-gradient(from -45deg,#F7D21C 0 25%,#2F7DE1 0 50%,#1F9440 0 75%,#E2352B 0 100%) border-box;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+.fmenu .fm-c .vt-sw[data-c="natural"]{background:linear-gradient(135deg,#fff,#cfe3f6)}
 .fmenu .fm-form{margin-top:12px}
 @media (max-width:760px){.fm-scroll{max-height:320px}}
 
@@ -3841,7 +3845,7 @@ html.night .ix-v-side{background:#2C323B}
     var fl = fx(it), fmax = mode === "libra" ? Math.max.apply(null, its.map(function(x){ return fx(x).length; })) : 0;
     $("fm-facts").innerHTML = fl.map(function(x){ return '<li>'+x+'</li>'; }).join("") + new Array(Math.max(0, fmax - fl.length) + 1).join('<li class="fm-ph" aria-hidden="true">&nbsp;</li>');
     $("fm-cw").hidden = !cheqC;
-    $("fm-c").innerHTML = !cheqC ? "" : (fcs.length ? fcs : ["Color"]).map(function(c){ return '<label><input type="radio" name="fmc" value="'+esc(c)+'"'+(c === fce ? ' checked' : '')+'><span>'+esc(c)+'</span></label>'; }).join("");
+    $("fm-c").innerHTML = !cheqC ? "" : (fcs.length ? fcs : ["Color"]).map(function(c){ return '<label><input type="radio" name="fmc" value="'+esc(c)+'"'+(c === fce ? ' checked' : '')+'><span><i class="vt-sw" data-c="'+esc(c.toLowerCase())+'" aria-hidden="true"></i>'+esc(c)+'</span></label>'; }).join("");
     var pr = fmPrices(it), varies = pr.ps.some(function(x){ return x !== pr.ps[0]; }) || pr.ps.length < pr.ok.length;
     $("fm-pres").textContent = (varies ? " · desde, " : " · ") + "paquete de 100";
     if(!pr.ok.length){ $("fm-price").textContent = "Sin stock"; $("fm-price").dataset.v = ""; }
@@ -5850,6 +5854,17 @@ html.night .ix-v-side{background:#2C323B}
     var box = t.closest(".pmenu"), it = box && ITEM[pmSel[box.dataset.pmg]]; if(!it) return;
     pmTf[it.key] = t.value; pmSync();
   });
+  /* 21 nov 2026 (Ian): en los menús con pestañas de tamaño (vasos) el panel de la derecha arranca a la altura del mostrador, no de las pestañas */
+  function vtAlign(){
+    document.querySelectorAll("#cat-grid .vt-grid").forEach(function(g){
+      var z = g.querySelector(".vt-left > .vt-zones"), st = g.querySelector(".vt-left > .vt-stage"), pn = g.querySelector(":scope > .vt-panel"); if(!pn) return;
+      var on = z && st && z.offsetHeight > 0 && matchMedia("(min-width:860px)").matches;
+      var m = on ? Math.round(st.getBoundingClientRect().top - g.getBoundingClientRect().top) + "px" : "";
+      if(pn.style.marginTop !== m) pn.style.marginTop = m;
+    });
+  }
+  new MutationObserver(function(){ requestAnimationFrame(vtAlign); }).observe($("cat-grid"), {childList: true, subtree: true});
+  addEventListener("resize", function(){ requestAnimationFrame(vtAlign); });
   $("cat-grid").addEventListener("change", function(e){ if(e.target.name !== "fmc") return; var p = BY_ID[fnav.pid], it = p && ITEM[fsel[p.id]]; if(!it) return; fmC[it.key] = e.target.value; syncMedida(); });
   $("cat-grid").addEventListener("change", function(e){ if(e.target.name !== "hmc") return; hmColor = e.target.value; hmSync(); });
   $("cat-grid").addEventListener("submit", function(e){ if(e.target.id !== "fm-form") return; e.preventDefault(); findMedidaWH(); if(document.activeElement) document.activeElement.blur(); });
