@@ -3874,6 +3874,12 @@ html.night .ix-v-side{background:#2C323B}
       + 'H'+f(x+r)+'Q'+f(x)+' '+f(y+h)+' '+f(x)+' '+f(y+h-r)+'Q'+f(x-bulge)+' '+f(y+h*.5)+' '+f(x)+' '+f(y+wave)+'Z';
     var mh2 = Math.min(12, h*.07);
     var mouth = 'M'+f(x+1.5)+' '+f(y+wave)+'Q'+f(x+w*.5)+' '+f(y+mh2*1.7)+' '+f(x+w-1.5)+' '+f(y+1)+'Q'+f(x+w*.5)+' '+f(y+mh2*.5)+' '+f(x+1.5)+' '+f(y+wave)+'Z';
+    if(T.real){ /* plástico de Blender: un rectángulo con su textura, nada dibujado encima */
+      var rr = Math.min(2, w*.02);
+      return '<clipPath id="'+k+'"><rect x="'+f(x)+'" y="'+f(y)+'" width="'+f(w)+'" height="'+f(h)+'" rx="'+f(rr)+'"/></clipPath>'
+        + (shadow ? '<ellipse cx="'+f(x + w/2)+'" cy="'+f(y + h + 2)+'" rx="'+f(w*.48)+'" ry="'+f(Math.max(2, Math.min(5, w*.04)))+'" fill="#000" fill-opacity=".22" filter="url(#'+u+'s)"/>' : '')
+        + '<g class="bag-real" clip-path="url(#'+k+')">' + tex() + '</g>';
+    }
     return '<clipPath id="'+k+'"><path d="'+body+'"/></clipPath>'
       + (shadow ? '<ellipse cx="'+f(x + w/2)+'" cy="'+f(y + h + 3)+'" rx="'+f(w*.5)+'" ry="'+f(Math.max(3, Math.min(7, w*.06)))+'" fill="#1D2B3A" fill-opacity=".16" filter="url(#'+u+'s)"/>' : '')
       + '<path d="'+body+'" fill="url(#'+u+'b)"/>'
@@ -5667,7 +5673,9 @@ html.night .ix-v-side{background:#2C323B}
   var BAG_UID = 0;
   /* texturas reales (fotos de Ian): boca arriba, centro que se repite en espejo, sello abajo; medidas en px de la imagen */
   var TEX = {
-    natural: {src: "img/tex-natural.webp", w: 400, h: 566, top: 20, bot: 546},
+    /* Ian (17 nov 2026: «se ven muy falsas»): la natural ahora es plástico hecho en Blender (Escritorio/Contenedor/fundas/funda_natural.py),
+       con transparencia real: se dibuja SOLA, sin el degradado azulado, la boca ni el contorno dibujados (real: true). Antes: img/tex-natural.webp */
+    natural: {src: "img/tex-natural-3d.webp", w: 600, h: 1200, top: 30, bot: 1140, real: true},
     polifan: {src: "img/tex-polifan.webp", w: 400, h: 524, top: 10, bot: 509},
     chequera: {src: "img/tex-chequera.webp", w: 400, h: 690, top: 14, bot: 649},
     rollo: {src: "img/tex-rollo.webp", w: 400, h: 732, top: 22, bot: 699}
@@ -5739,6 +5747,15 @@ html.night .ix-v-side{background:#2C323B}
       return '<path d="'+dd+'" class="bk-crease-d" transform="translate(.8 .8)"/><path d="'+dd+'" class="bk-crease"/>';
     };
     var lab = function(tx, ty, t){ var cw = t.length*fs*.66 + fs*1.1, ch = fs*1.7; return '<g class="bk-chip"><rect x="'+f(tx-cw/2)+'" y="'+f(ty-ch/2)+'" width="'+f(cw)+'" height="'+f(ch)+'" rx="'+f(ch/2)+'"/><text x="'+f(tx)+'" y="'+f(ty+fs*.36)+'" text-anchor="middle" style="font-size:'+fs+'px">'+t+'</text></g>'; };
+    if(T.real) /* plástico de Blender (natural): un rectángulo con su textura, nada dibujado encima */
+      return '<svg class="bag" viewBox="0 0 '+VW+' '+VH+'" role="img" aria-label="Funda de '+dec(d[0])+' por '+dec(d[1])+' pulgadas">'
+        + '<defs><filter id="'+u+'s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="'+f(Math.max(1.5,w*.02))+'"/></filter>'
+        + '<clipPath id="'+u+'r"><rect x="'+f(x)+'" y="'+f(y)+'" width="'+f(w)+'" height="'+f(h)+'" rx="'+f(Math.min(2, w*.02))+'"/></clipPath></defs>'
+        + '<g class="bag-flip"><ellipse cx="'+f(cx)+'" cy="'+f(bB+3)+'" rx="'+f(span*.48)+'" ry="'+f(Math.max(2,Math.min(5,span*.04)))+'" fill="#000" fill-opacity=".18" filter="url(#'+u+'s)"/>'
+        + '<g transform="translate('+f(cx)+' '+f(gy)+')'+(horiz ? ' rotate(-90)' : '')+'"><g class="bag-in"><g class="bag-real" clip-path="url(#'+u+'r)">'+tex()+'</g></g></g></g>'
+        + '<g class="bk-dim"><line x1="'+f(bL)+'" y1="'+f(bT-gap)+'" x2="'+f(bR)+'" y2="'+f(bT-gap)+'"/><line x1="'+f(bR+gap)+'" y1="'+f(bT)+'" x2="'+f(bR+gap)+'" y2="'+f(bB)+'"/></g>'
+        + lab((bL+bR)/2, bT-gap, dec(horiz ? d[1] : d[0])+'"') + lab(bR+gap, (bT+bB)/2, dec(horiz ? d[0] : d[1])+'"')
+        + '</svg>';
     return '<svg class="bag" viewBox="0 0 '+VW+' '+VH+'" role="img" aria-label="Funda de '+dec(d[0])+' por '+dec(d[1])+' pulgadas">'
       + '<defs>'
       + '<linearGradient id="'+u+'b" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".97"/><stop offset=".16" stop-color="#F3F8FE" stop-opacity=".82"/><stop offset=".5" stop-color="#E6F0FA" stop-opacity=".62"/><stop offset=".82" stop-color="#D7E6F5" stop-opacity=".78"/><stop offset="1" stop-color="#FFFFFF" stop-opacity=".95"/></linearGradient>'
@@ -7512,6 +7529,9 @@ html.night{--pp-edge:rgba(143,162,255,.5);--pp-lift:0 1px 2px rgba(0,0,0,.3),0 1
 /* ===== Encabezado negro (Ian, 16 nov 2026: «mucho beige»; eligió negro, como el pie). Se redefinen los colores solo dentro de .top ===== */
 header.top,html.night header.top,body.on-inicio header.top{--ink:#F3F0E8;--muted:rgba(243,240,232,.66);--surface:#1B1F1E;--line:rgba(243,240,232,.18);--bg:#0E1110;--sky:#8FA2FF;--sky-soft:rgba(143,162,255,.14);
   background:#0E1110!important;border-bottom-color:#0E1110!important;color:#F3F0E8}
+/* Funda natural de Blender (17 nov 2026; con más presencia el 21 nov 2026: gris azulado, pliegues y costuras marcados): sombra suave en el borde, como una funda real sobre la mesa */
+#view-catalogo svg.bag .bag-real{filter:drop-shadow(0 0 1.5px rgba(40,55,70,.35)) drop-shadow(0 2px 3px rgba(40,55,70,.18))}
+html.night #view-catalogo svg.bag .bag-real{filter:drop-shadow(0 2px 4px rgba(0,0,0,.45))}
 /* Mostradores fijos (Ian, 17 nov 2026: «la imagen baja con el scroll y después se queda quieta»): ya no se pegan arriba al bajar, quedan en su lugar */
 #view-catalogo .vt-left,#view-catalogo .fm-left,#view-catalogo .fmed-left,#view-catalogo .cb-left,#view-catalogo .pmenu .pm-stage.art{position:relative!important;top:auto!important}
 /* Ian (19 nov 2026: «no sale el botón para elegir cuántas unidades comprar»): en laptops el mostrador cuadrado empujaba la cantidad y «Agregar al carrito»
