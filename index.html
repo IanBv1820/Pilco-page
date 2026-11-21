@@ -3860,6 +3860,7 @@ html.night .ix-v-side{background:#2C323B}
       var fz = Math.min(1, h*.3/(ht + hb)); ht *= fz; hb *= fz;
       var img = '<image href="'+T.src+'" width="'+T.w+'" height="'+T.h+'"/>';
       var piece = function(px, py, pw, ph, v0, vh){ return '<svg x="'+f(px)+'" y="'+f(py)+'" width="'+f(pw)+'" height="'+f(ph)+'" viewBox="0 '+v0+' '+T.w+' '+vh+'" preserveAspectRatio="none">'+img+'</svg>'; };
+      if(T.entera) return piece(x, y, w, h, 0, T.h); /* 21 nov 2026: funda natural de Blender, muy transparente: la foto entera estirada a la medida (en pedazos se notaba la unión) */
       var midH = Math.max(0, h - ht - hb), out = piece(x, y, w, ht, 0, T.top), n = 0, yy = y + ht;
       while(yy < y + ht + midH - .1 && n < 12){
         var hh = Math.min(mh, y + ht + midH - yy), fr = (T.bot - T.top) * hh / mh;
@@ -5675,8 +5676,11 @@ html.night .ix-v-side{background:#2C323B}
   var TEX = {
     /* Ian (17 nov 2026: «se ven muy falsas»): la natural ahora es plástico hecho en Blender (Escritorio/Contenedor/fundas/funda_natural.py),
        con transparencia real: se dibuja SOLA, sin el degradado azulado, la boca ni el contorno dibujados (real: true). Antes: img/tex-natural.webp */
-    /* 21 nov 2026: a Ian no le gustó la versión procesada («parece que la funda estuviera cortada»); vuelve la anterior mientras se renderiza en Blender como las botellas */
-    natural: {src: "img/tex-natural.webp", w: 400, h: 566, top: 20, bot: 546},
+    /* 21 nov 2026: a Ian no le gustó la versión procesada («parece que la funda estuviera cortada»).
+       Ian aprobó (21 nov 2026) la funda natural renderizada en Blender (Escritorio/Contenedor/fundas/funda_natural_3d.py, webp con a_pagina_natural.py):
+       plana 6×12", malla 3D con arrugas finas tipo celofán, muy transparente, sin unión visible (sin franja de sellado ni líneas de borde).
+       Recortada al borde de la funda (3 px de margen) para que llene la medida; se dibuja entera estirada (entera: true), sin pedazos; top = boca, bot = donde va el sellado. Antes: img/tex-natural.webp (400×566, top 20, bot 546) */
+    natural: {src: "img/tex-natural-render.webp", w: 572, h: 1104, top: 4, bot: 1042, real: true, entera: true},
     /* Ian (21 nov 2026): la versión gris azulada, más gruesa, va en polifán; la natural es más delgada y arrugada. Antes: img/tex-polifan.webp */
     polifan: {src: "img/tex-polifan-3d.webp", w: 600, h: 1200, top: 30, bot: 1140, real: true},
     chequera: {src: "img/tex-chequera.webp", w: 400, h: 690, top: 14, bot: 649},
@@ -5724,6 +5728,7 @@ html.night .ix-v-side{background:#2C323B}
       var fz = Math.min(1, h*.3/(ht + hb)); ht *= fz; hb *= fz;
       var img = '<image href="'+T.src+'" width="'+T.w+'" height="'+T.h+'"/>';
       var piece = function(px, py, pw, ph, v0, vh){ return '<svg x="'+f(px)+'" y="'+f(py)+'" width="'+f(pw)+'" height="'+f(ph)+'" viewBox="0 '+v0+' '+T.w+' '+vh+'" preserveAspectRatio="none">'+img+'</svg>'; };
+      if(T.entera) return piece(x, y, w, h, 0, T.h); /* 21 nov 2026: funda natural de Blender: la foto entera estirada a la medida (en pedazos se notaba la unión) */
       /* centro: copias apiladas, una sí y otra en espejo, para que no se note la unión */
       var midH = Math.max(0, h - ht - hb), out = piece(x, y, w, ht, 0, T.top), n = 0, yy = y + ht;
       while(yy < y + ht + midH - .1 && n < 12){
