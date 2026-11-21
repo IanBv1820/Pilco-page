@@ -1007,6 +1007,7 @@ svg.noin .bag-in{animation:none}
 .fm-scroll .ptable tbody tr{cursor:pointer}
 .lbtag{display:inline-block;font-size:.68rem;font-weight:600;background:#FFE7A0;color:#6B4E00;border-radius:999px;padding:1px 7px;vertical-align:1px}
 .fm-lbs.big .fm-lb{min-height:56px;font-size:.95rem}
+.fmenu .fm-cw{margin:12px 0 2px}.fmenu .fm-cw .pm-lab{margin:0 0 6px}.fmenu .fm-c{max-width:360px}
 .fmenu .fm-form{margin-top:12px}
 @media (max-width:760px){.fm-scroll{max-height:320px}}
 
@@ -3802,6 +3803,7 @@ html.night .ix-v-side{background:#2C323B}
       + '<div class="pm-buy fm-buy"><div class="pm-price"><b id="fm-price"></b><span id="fm-pres"></span></div><div id="fm-add"></div></div></div>'
       + '<div class="pm-side">'
       + '<div class="pm-info" aria-live="polite"><h3 class="pm-t" id="fm-t"></h3><p class="pm-use" id="fm-lbinfo"></p><ul class="mfacts" id="fm-facts"></ul></div>'
+      + '<div class="fm-cw" id="fm-cw" hidden><p class="pm-lab">Color</p><div class="seg fm-c" id="fm-c" role="radiogroup" aria-label="Color"></div></div>'
       + (mode === "libra" ? lbs : search + lbs + '<p class="pm-lab">Todas las medidas</p>' + table)
       + '</div></div>';
   }
@@ -3809,6 +3811,10 @@ html.night .ix-v-side{background:#2C323B}
   var fmAnim = 0;
   /* v77: las fundas vuelven a su animación de siempre (la funda nueva sube con bagIn); el rebote queda solo en platos */
   function fmFlip(box, html){ box.innerHTML = html; }
+  /* color elegido de la funda (chequeras: «Color» por defecto; «Transparente»/«Natural» solo si lo eligen) */
+  var fmC = {};
+  function fmCs(it){ var o = []; (it && it.rows || []).forEach(function(r){ if(r.c && o.indexOf(r.c) < 0) o.push(r.c); }); return o; }
+  function fmCEff(it){ var cs = fmCs(it); if(!cs.length) return ""; return cs.indexOf(fmC[it.key]) >= 0 ? fmC[it.key] : cs.indexOf("Color") >= 0 ? "Color" : cs[0]; }
   function syncMedida(first){
     var box = document.querySelector(".fmenu"), p = BY_ID[fnav.pid]; if(!box || !p) return;
     var mode = box.dataset.mode, its = itemsOf(p).slice().sort(byMed), L = lbList(its);
@@ -3823,7 +3829,10 @@ html.night .ix-v-side{background:#2C323B}
     $("fm-t").innerHTML = 'Funda ' + esc(it.m) + (d ? '<small>' + dec(d[0]*2.54, 1) + ' × ' + dec(d[1]*2.54, 1) + ' cm · ' + esc(it.m.replace(/\s*[x×]\s*/, " × ")) + ' pulg.</small>' : '');
     var lbn = lbName(p, it);
     $("fm-lbinfo").innerHTML = on ? '<b>Para ' + esc(LIBRAS[on.i][0]) + '</b> aprox.' : lbn ? '<b>Rollo de ' + esc(lbn.toLowerCase()) + '</b>' : '';
-    $("fm-facts").innerHTML = facts(it).map(function(x){ return '<li>'+x+'</li>'; }).join("");
+    var fcs = p.mat === "Chequeras" ? fmCs(it) : [], fce = fmCEff(it);
+    $("fm-facts").innerHTML = facts(it).filter(function(x){ return fcs.length < 2 || !/^<b>Colou?res?:/.test(x); }).map(function(x){ return '<li>'+x+'</li>'; }).join("");
+    $("fm-cw").hidden = fcs.length < 2;
+    $("fm-c").innerHTML = fcs.length < 2 ? "" : fcs.map(function(c){ return '<label><input type="radio" name="fmc" value="'+esc(c)+'"'+(c === fce ? ' checked' : '')+'><span>'+esc(c)+'</span></label>'; }).join("");
     var pr = fmPrices(it), varies = pr.ps.some(function(x){ return x !== pr.ps[0]; }) || pr.ps.length < pr.ok.length;
     $("fm-pres").textContent = (varies ? " · desde, " : " · ") + "paquete de 100";
     if(!pr.ok.length){ $("fm-price").textContent = "Sin stock"; $("fm-price").dataset.v = ""; }
@@ -5699,8 +5708,9 @@ html.night .ix-v-side{background:#2C323B}
     rollo: {src: "img/tex-rollo.webp", w: 400, h: 732, top: 22, bot: 699}
   };
   /* v92 (Ian): chequeras en 5 colores que se alternan por medida (antes todas rojas). Cada medida tiene siempre el mismo color. */
+  /* 21 nov 2026 (Ian): en chequeras solo se exhiben las de color; la transparente sale solo si eligen ese color en las opciones */
+  var TEX_CHEQ_T = {src: "img/tex-cheq-transparente.webp", w: 400, h: 678, top: 14, bot: 641};
   var TEX_CHEQ = [
-    {src: "img/tex-cheq-transparente.webp", w: 400, h: 678, top: 14, bot: 641},
     {src: "img/tex-cheq-amarilla.webp", w: 400, h: 687, top: 14, bot: 649},
     {src: "img/tex-cheq-azul.webp", w: 400, h: 689, top: 14, bot: 651},
     {src: "img/tex-cheq-verde.webp", w: 400, h: 691, top: 14, bot: 653},
@@ -5714,7 +5724,7 @@ html.night .ix-v-side{background:#2C323B}
   function texFor(p, v){
     if(p.mat === "Polifán") return TEX.polifan;
     if(p.mat === "De rollo") return TEX.rollo;
-    if(p.mat === "Chequeras") return cheqTex(p, v);
+    if(p.mat === "Chequeras") return /^(Transparente|Natural)$/.test(fmCEff(ITEM[p.id + "|" + v]) || "") ? TEX_CHEQ_T : cheqTex(p, v);
     return TEX.natural;
   }
   function bagSVG(p, v, ratio){
@@ -5828,6 +5838,7 @@ html.night .ix-v-side{background:#2C323B}
     var box = t.closest(".pmenu"), it = box && ITEM[pmSel[box.dataset.pmg]]; if(!it) return;
     pmTf[it.key] = t.value; pmSync();
   });
+  $("cat-grid").addEventListener("change", function(e){ if(e.target.name !== "fmc") return; var p = BY_ID[fnav.pid], it = p && ITEM[fsel[p.id]]; if(!it) return; fmC[it.key] = e.target.value; syncMedida(); });
   $("cat-grid").addEventListener("change", function(e){ if(e.target.name !== "hmc") return; hmColor = e.target.value; hmSync(); });
   $("cat-grid").addEventListener("submit", function(e){ if(e.target.id !== "fm-form") return; e.preventDefault(); findMedidaWH(); if(document.activeElement) document.activeElement.blur(); });
   $("cat-grid").addEventListener("keydown", function(e){
@@ -5931,6 +5942,7 @@ html.night .ix-v-side{background:#2C323B}
     var pbk = pendBk[it.key], Bf = fBk(it); if(pbk && pbk.on && Bf){ nl.qty = bkFix(pbk, Bf.pb); nl.bk = {n: pbk.n, s: pbk.s, w: Bf.w, pb: Bf.pb}; } delete pendBk[it.key];
     if(b.closest(".pmenu") && pmTf[it.key]) nl.sel.tf = pmTf[it.key];
     if(b.closest(".hmenu") && halRow(it, hmEff(it))) nl.sel.c = hmEff(it);
+    if(b.closest(".fmenu") && fmCs(it).length > 1) nl.sel.c = fmCEff(it);
     if(b.closest(".bmenu")) basToSel(it, nl.sel);
     cart.push({key: it.key, lines: [nl]}); save(); renderCart(); flyToCart(b);
     if(withQty(it)) refreshAdd(it.key);
