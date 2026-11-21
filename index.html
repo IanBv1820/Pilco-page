@@ -3842,11 +3842,21 @@ html.night .ix-v-side{background:#2C323B}
   function stkOn(p){ return p && /^(Naturales|Polifán|Chequeras|De rollo)$/.test(p.mat || ""); }
   /* v167 (Ian): la escala del tipo se calcula sin las medidas especiales (la 7×28 «baguette» de rollo); solo cuando se elige una de ellas
      la escala cambia para que entre (como en la v166) */
-  function stkSkip(p, x){ return !!lbName(p, x); }
+  /* Ian (21 nov 2026): la escala del mostrador llega hasta 12×18; las fundas más grandes que eso llevan su propia escala */
+  var STK_MAXW = 12, STK_MAXH = 18;
+  function stkBig(x){ var d = dims(x.m); return !!(d && (d[0] > STK_MAXW || d[1] > STK_MAXH)); }
+  function stkSkip(p, x){ return !!lbName(p, x) || stkBig(x); }
   function stkGeo(p, sel){
+    if(sel && stkBig(sel)){
+      var dd = dims(sel.m), ck2 = "_stkX" + sel.m;
+      if(p[ck2]) return p[ck2];
+      var px2 = (STK_BOT - STK_TOP) / dd[1];
+      return (p[ck2] = {px: px2, VW: Math.round(STK_L + dd[0]*px2 + STK_R), mw: dd[0], mh: dd[1], cx: STK_L + dd[0]*px2/2, k: ck2});
+    }
     var big = !!(sel && stkSkip(p, sel)), ck = big ? "_stkB" : "_stk";
     if(p[ck]) return p[ck];
-    var mw = 0, mh = 0; itemsOf(p).forEach(function(it){ if(!big && stkSkip(p, it)) return; var d = dims(it.m); if(d){ mw = Math.max(mw, d[0]); mh = Math.max(mh, d[1]); } });
+    var mw = 0, mh = 0; itemsOf(p).forEach(function(it){ if(!big && stkSkip(p, it)) return; if(big && stkBig(it)) return; var d = dims(it.m); if(d){ mw = Math.max(mw, d[0]); mh = Math.max(mh, d[1]); } });
+    if(!mh) itemsOf(p).forEach(function(it){ var d = dims(it.m); if(d){ mw = Math.max(mw, d[0]); mh = Math.max(mh, d[1]); } });
     var px = (STK_BOT - STK_TOP) / mh, VW = Math.round(STK_L + mw*px + STK_R);
     return (p[ck] = {px: px, VW: VW, mw: mw, mh: mh, cx: STK_L + mw*px/2, k: ck});
   }
