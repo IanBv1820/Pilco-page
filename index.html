@@ -1015,6 +1015,7 @@ svg.noin .bag-in{animation:none}
 .fmenu .fm-stage.art{aspect-ratio:1;border-radius:18px;border:1px solid var(--line)}
 .fm-left{position:sticky;top:calc(var(--hh,72px) + 16px);display:flex;flex-direction:column;min-width:0}
 .fmenu .fm-buy{margin-top:14px;border-top:0;padding-top:0}
+.fmenu .pm-side .fm-buy{margin-top:22px;max-width:420px}
 .fm-stage > svg{width:100%;height:100%;display:block}
 .fmenu .fm-form{margin-top:14px}
 .fmenu .lbnote{margin:6px 0 0;font-size:.78rem;color:var(--muted)}
@@ -3798,13 +3799,15 @@ html.night .ix-v-side{background:#2C323B}
     var table = '<div class="ptable-wrap fm-scroll"><table class="ptable"><thead><tr><th>Medida (pulg.)</th><th class="num">Precio<small>paquete de 100</small></th></tr></thead><tbody id="fm-rows">'+rows+'</tbody></table></div>';
     /* v107 (Ian): en PC el precio, la cantidad y «Agregar al carrito» van debajo de la funda (columna fija), para no bajar toda la página;
        en el celular siguen al final, después de las medidas */
+    /* 21 nov 2026 (Ian): en chequeras y rollo (menú por libras) el precio y el carrito van debajo del selector de libras, para equilibrar la vista */
+    var buy = '<div class="pm-buy fm-buy"><div class="pm-price"><b id="fm-price"></b><span id="fm-pres"></span></div><div id="fm-add"></div></div>';
     return '<div class="fmenu" data-mode="'+mode+'">'
       + '<div class="fm-left"><div class="fm-stage art" id="fm-art"></div>'
-      + '<div class="pm-buy fm-buy"><div class="pm-price"><b id="fm-price"></b><span id="fm-pres"></span></div><div id="fm-add"></div></div></div>'
+      + (mode === "libra" ? '' : buy) + '</div>'
       + '<div class="pm-side">'
       + '<div class="pm-info" aria-live="polite"><h3 class="pm-t" id="fm-t"></h3><p class="pm-use" id="fm-lbinfo"></p><ul class="mfacts" id="fm-facts"></ul></div>'
       + '<div class="fm-cw" id="fm-cw" hidden><p class="pm-lab">Color</p><div class="seg fm-c" id="fm-c" role="radiogroup" aria-label="Color"></div></div>'
-      + (mode === "libra" ? lbs : search + lbs + '<p class="pm-lab">Todas las medidas</p>' + table)
+      + (mode === "libra" ? lbs + buy : search + lbs + '<p class="pm-lab">Todas las medidas</p>' + table)
       + '</div></div>';
   }
   /* la funda nueva arranca con el tamaño de la anterior y se acomoda con un rebote */
