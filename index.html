@@ -1007,7 +1007,8 @@ svg.noin .bag-in{animation:none}
 .fm-scroll .ptable tbody tr{cursor:pointer}
 .lbtag{display:inline-block;font-size:.68rem;font-weight:600;background:#FFE7A0;color:#6B4E00;border-radius:999px;padding:1px 7px;vertical-align:1px}
 .fm-lbs.big .fm-lb{min-height:56px;font-size:.95rem}
-.fmenu .fm-cw{margin:12px 0 2px}.fmenu .fm-cw .pm-lab{margin:0 0 6px}.fmenu .fm-c{max-width:360px}
+.fmenu[data-mode=libra] .stk-stage svg.bag{width:100%;height:100%;display:block}
+.fmenu .fm-cw{margin:12px 0 2px}.fmenu .fm-ph{visibility:hidden}.fmenu .fm-cw .pm-lab{margin:0 0 6px}.fmenu .fm-c{max-width:360px}
 .fmenu .fm-form{margin-top:12px}
 @media (max-width:760px){.fm-scroll{max-height:320px}}
 
@@ -3832,10 +3833,15 @@ html.night .ix-v-side{background:#2C323B}
     $("fm-t").innerHTML = 'Funda ' + esc(it.m) + (d ? '<small>' + dec(d[0]*2.54, 1) + ' × ' + dec(d[1]*2.54, 1) + ' cm · ' + esc(it.m.replace(/\s*[x×]\s*/, " × ")) + ' pulg.</small>' : '');
     var lbn = lbName(p, it);
     $("fm-lbinfo").innerHTML = on ? '<b>Para ' + esc(LIBRAS[on.i][0]) + '</b> aprox.' : lbn ? '<b>Rollo de ' + esc(lbn.toLowerCase()) + '</b>' : '';
-    var fcs = p.mat === "Chequeras" ? fmCs(it) : [], fce = fmCEff(it);
-    $("fm-facts").innerHTML = facts(it).filter(function(x){ return fcs.length < 2 || !/^<b>Colou?res?:/.test(x); }).map(function(x){ return '<li>'+x+'</li>'; }).join("");
-    $("fm-cw").hidden = fcs.length < 2;
-    $("fm-c").innerHTML = fcs.length < 2 ? "" : fcs.map(function(c){ return '<label><input type="radio" name="fmc" value="'+esc(c)+'"'+(c === fce ? ' checked' : '')+'><span>'+esc(c)+'</span></label>'; }).join("");
+    /* 21 nov 2026 (Ian): al cambiar de medida en el menú por libras solo cambia el mostrador; los selectores y el carrito se quedan quietos
+       (el selector de color y las líneas de datos guardan su espacio aunque esa medida no los tenga) */
+    var cheqC = p.mat === "Chequeras" && its.some(function(x){ return fmCs(x).length > 1; });
+    var fcs = cheqC ? fmCs(it) : [], fce = fmCEff(it);
+    var fx = function(x){ return facts(x).filter(function(f){ return !cheqC || !/^<b>Colou?res?:/.test(f); }); };
+    var fl = fx(it), fmax = mode === "libra" ? Math.max.apply(null, its.map(function(x){ return fx(x).length; })) : 0;
+    $("fm-facts").innerHTML = fl.map(function(x){ return '<li>'+x+'</li>'; }).join("") + new Array(Math.max(0, fmax - fl.length) + 1).join('<li class="fm-ph" aria-hidden="true">&nbsp;</li>');
+    $("fm-cw").hidden = !cheqC;
+    $("fm-c").innerHTML = !cheqC ? "" : (fcs.length ? fcs : ["Color"]).map(function(c){ return '<label><input type="radio" name="fmc" value="'+esc(c)+'"'+(c === fce ? ' checked' : '')+'><span>'+esc(c)+'</span></label>'; }).join("");
     var pr = fmPrices(it), varies = pr.ps.some(function(x){ return x !== pr.ps[0]; }) || pr.ps.length < pr.ok.length;
     $("fm-pres").textContent = (varies ? " · desde, " : " · ") + "paquete de 100";
     if(!pr.ok.length){ $("fm-price").textContent = "Sin stock"; $("fm-price").dataset.v = ""; }
@@ -3996,7 +4002,10 @@ html.night .ix-v-side{background:#2C323B}
   function stkSync(box, p, it, first){
     var G = stkGeo(p, it), d = dims(it.m); if(!d) return false;
     var svg = box.querySelector(".stk-svg"), regeo = false;
-    if(!svg || svg.dataset.g !== G.k){ regeo = !!svg; box.innerHTML = stkSVG(G, "Funda"); svg = box.querySelector(".stk-svg"); svg.dataset.g = G.k; box.style.aspectRatio = G.VW + " / 400"; box.classList.add("stk-stage"); box.style.setProperty("--stk-ar", G.VW / 400); stkRuler(svg, G); if(!regeo) first = true; }
+    if(!svg || svg.dataset.g !== G.k){ regeo = !!svg; box.innerHTML = stkSVG(G, "Funda"); svg = box.querySelector(".stk-svg"); svg.dataset.g = G.k;
+      /* 21 nov 2026 (Ian): en el menú por libras el cuadro del mostrador no cambia de tamaño entre medidas (solo cambia la funda), así nada se mueve */
+      var B = box.closest('.fmenu[data-mode="libra"]') ? stkGeo(p, null) : G;
+      box.style.aspectRatio = B.VW + " / 400"; box.classList.add("stk-stage"); box.style.setProperty("--stk-ar", B.VW / 400); stkRuler(svg, G); if(!regeo) first = true; }
     var u = svg.dataset.u, its = itemsOf(p).slice().sort(byMed), prev = regeo ? null : ITEM[stkCur[p.id]];
     var mk = function(x){ var dd = dims(x.m), bb = stkBox(G, dd); return {b: bb, draw: function(sh){ return stkBag(u, bb, p, x.m, sh); }}; };
     var to = mk(it), from = prev && prev !== it && dims(prev.m) ? mk(prev) : null;
