@@ -7339,9 +7339,12 @@ html.night input,html.night select,html.night textarea{background:#1B1F1E}
 @keyframes ppSube{from{opacity:0;transform:translateY(12px)}}
 
 /* 2. Cortina al cambiar entre Inicio, Catálogo y Carrito: barre de izquierda a derecha y destapa la pantalla nueva */
-.pp-cortina{position:fixed;inset:0;z-index:85;background:#2446F5;pointer-events:none;transform:translateX(101%)}
-.pp-cortina::before{content:"";position:absolute;top:0;bottom:0;left:0;width:6px;background:#8FA2FF}
-html.night .pp-cortina{background:#16335A}
+/* 22 nov 2026 (Ian): la cortina de transición con el estilo nuevo: el mismo degradado del título principal
+   (negro → azul lila → verde) y un filo verde limón al frente */
+.pp-cortina{position:fixed;inset:0;z-index:85;background:linear-gradient(105deg,#0E1110 0%,#2E44D8 52%,#6F7FF5 78%,#7DBF2E 112%);pointer-events:none;transform:translateX(101%)}
+.pp-cortina::before{content:"";position:absolute;top:0;bottom:0;left:0;width:6px;background:#C9F24E}
+html.night .pp-cortina{background:linear-gradient(105deg,#0E1110 0%,#24306E 52%,#46528F 78%,#4C6B1E 112%)}
+html.night .pp-cortina::before{background:#B3C0FF}
 
 /* 3. Portada del catálogo: las líneas llegan una tras otra */
 @media (prefers-reduced-motion:no-preference){
