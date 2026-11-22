@@ -2192,9 +2192,9 @@ html.night .ix-v-side{background:#2C323B}
   var VIEWS = ["inicio","catalogo","pedido"], ready = false;
   function show(v, keepScroll){
     if(VIEWS.indexOf(v) < 0) v = "inicio";
-    /* v211: al pasar a otra pantalla, cortina azul marino; al entrar al catálogo, sus líneas llegan escalonadas */
+    /* v211: al entrar al catálogo, sus líneas llegan escalonadas (la cortina se quitó el 22 nov 2026) */
     var antes = VIEWS.filter(function(x){ return !$("view-"+x).hidden; })[0];
-    if(antes && antes !== v){ if(window.ppCortina) window.ppCortina(); if(v === "catalogo") window.ppCxAnim = true; }
+    if(antes && antes !== v && v === "catalogo") window.ppCxAnim = true;
     VIEWS.forEach(function(x){ $("view-"+x).hidden = (x !== v); });
     document.body.classList.toggle("on-inicio", v === "inicio"); /* v105: encabezado azul y barra fija solo en el Inicio */
     var ee = $("eva-end"); if(ee) ee.hidden = (v !== "inicio");
@@ -2692,7 +2692,9 @@ html.night .ix-v-side{background:#2C323B}
   }
   function supCard(o, cat){
     var g0 = o.gs[0], big = isPlateGroup(g0) ? pmItems(g0).slice(-1)[0] : null;
-    var art = big ? pmCardSVG(big) : subImg(g0.name) || ART[SUB_ART[g0.name] || ""] || artFor(g0.items[0].p);
+    /* 22 nov 2026 (Ian): la tarjeta «Portacomidas» lleva la foto del contenedor de 3 divisiones, sin fondo */
+    var art = o.S.name === "Portacomidas" ? '<img class="cut sub" src="img/portacomidas-3div.webp" alt="Portacomidas de espuma de 3 divisiones" loading="lazy">'
+      : big ? pmCardSVG(big) : subImg(g0.name) || ART[SUB_ART[g0.name] || ""] || artFor(g0.items[0].p);
     var ps = []; o.gs.forEach(function(g){ g.items.forEach(function(it){ (it.rows || []).forEach(function(r){ if(!r.out && typeof r.p === "number") ps.push(r.p); }); }); });
     var desc = joinY(o.gs.map(function(g, i){ return lc(g.name, i); }));
     return '<article class="card mc mat" data-sup="'+esc(o.S.name)+'"><div class="art">'+art+'</div><div class="body">'
@@ -7337,13 +7339,7 @@ html.night input,html.night select,html.night textarea{background:#1B1F1E}
 @keyframes ppGolpe{from{transform:translateY(110%) rotate(7deg)}}
 @keyframes ppSube{from{opacity:0;transform:translateY(12px)}}
 
-/* 2. Cortina al cambiar entre Inicio, Catálogo y Carrito: barre de izquierda a derecha y destapa la pantalla nueva */
-/* 22 nov 2026 (Ian): la cortina de transición con el estilo nuevo: el mismo degradado del título principal
-   (negro → azul lila → verde) y un filo verde limón al frente */
-.pp-cortina{position:fixed;inset:0;z-index:85;background:linear-gradient(105deg,#0E1110 0%,#2E44D8 52%,#6F7FF5 78%,#7DBF2E 112%);pointer-events:none;transform:translateX(101%)}
-.pp-cortina::before{content:"";position:absolute;top:0;bottom:0;left:0;width:6px;background:#C9F24E}
-html.night .pp-cortina{background:linear-gradient(105deg,#0E1110 0%,#24306E 52%,#46528F 78%,#4C6B1E 112%)}
-html.night .pp-cortina::before{background:#B3C0FF}
+/* 2. (22 nov 2026, Ian) se quitó la cortina de transición entre pantallas */
 
 /* 3. Portada del catálogo: las líneas llegan una tras otra */
 @media (prefers-reduced-motion:no-preference){
@@ -7787,14 +7783,6 @@ section.ix.ix-lines{padding-top:clamp(20px,3vw,36px)}
 /* v211: título de la portada en palabras (para el golpe) y la cortina entre pantallas */
 (function(){
   var calm = false; try{ calm = matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){}
-  window.ppCortina = function(){
-    if(!window.ppNavOk || !Element.prototype.animate) return;
-    try{ if(matchMedia("(prefers-reduced-motion: reduce)").matches) return; }catch(e){}
-    var c = document.querySelector(".pp-cortina");
-    if(!c){ c = document.createElement("div"); c.className = "pp-cortina"; c.setAttribute("aria-hidden", "true"); document.body.appendChild(c); }
-    if(c._a) c._a.cancel();
-    c._a = c.animate([{transform:"translateX(0)"},{transform:"translateX(101%)"}], {duration:340, easing:"cubic-bezier(.77,0,.175,1)"});
-  };
   var h = document.getElementById("ix-h1"); if(!h || calm) return;
   var n = 0;
   (function split(node){
