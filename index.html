@@ -1607,7 +1607,7 @@ html.night .ix-v-side{background:#2C323B}
   <!-- ================= INICIO ================= -->
   <div id="view-inicio">
     <!-- v200 (Ian): Inicio «Vitrina», con fotos hechas solo para el Inicio. Respaldo del inicio anterior: respaldo/index-antes-de-vitrina.html -->
-    <!-- v216 (Ian, 14 nov 2026): portada con la estética de su repo Pilco-page (crema, título gigante, dibujo de vaso, tarrina y plato). Sin video. El dibujo está quieto: nada flota ni gira -->
+    <!-- v216 (Ian, 14 nov 2026): portada con la estética de su repo Pilco-page (crema, título gigante). 22 nov 2026: Ian pidió productos menos vectoriales y animados (fotos reales que flotan) -->
     <section class="ix ix-hero ix-hero-pp" aria-labelledby="ix-h1">
       <p class="ix-hoy"><span class="ix-open" id="hc-st"><i aria-hidden="true"></i><span><b>Hoy</b> <span id="hc-st-t">Abierto hasta 18:00</span></span></span></p>
       <div class="ix-wrap ix-pp-grid">
@@ -1625,33 +1625,24 @@ html.night .ix-v-side{background:#2C323B}
             <defs><path id="ppcirc" d="M100 100m-78 0a78 78 0 1 1 156 0a78 78 0 1 1-156 0"/></defs>
             <text><textPath href="#ppcirc">AL POR MAYOR · RETIRO EN EL LOCAL · QUITO · </textPath></text>
           </svg>
-          <svg class="ix-pp-scene" viewBox="0 0 520 560" fill="none">
-            <defs><clipPath id="ppCupClip"><path d="M172 170h176l-24 300a14 14 0 0 1-14 12H210a14 14 0 0 1-14-12z"/></clipPath></defs>
-            <g>
-              <path class="sh s-paper" d="M24 372h188l-14 92a12 12 0 0 1-12 10H50a12 12 0 0 1-12-10z"/>
-              <path class="sh s-lime" d="M14 372l22-58a10 10 0 0 1 9-6h146a10 10 0 0 1 9 6l22 58z"/>
-              <path class="st" d="M84 340h68"/>
-              <path class="st thin" d="M52 404h132M56 432h124"/>
-            </g>
-            <g>
-              <path class="straw" d="M282 176L330 22"/>
-              <path class="sh s-clear" d="M172 170h176l-24 300a14 14 0 0 1-14 12H210a14 14 0 0 1-14-12z"/>
-              <g clip-path="url(#ppCupClip)">
-                <path class="liq" d="M120 250c30-16 60 16 90 0s60-16 90 0 60 16 90 0 60-16 90 0v260H120z"/>
-                <circle class="bub" cx="230" cy="420" r="7"/><circle class="bub" cx="268" cy="452" r="5"/><circle class="bub" cx="298" cy="380" r="9"/><circle class="bub" cx="246" cy="330" r="4"/>
-              </g>
-              <path class="st" d="M172 170h176l-24 300a14 14 0 0 1-14 12H210a14 14 0 0 1-14-12z"/>
-              <path class="sh s-paper" d="M186 150c10-62 138-62 148 0z"/>
-              <rect class="sh s-ink" x="158" y="148" width="204" height="26" rx="10"/>
-              <path class="st thin light" d="M196 214l14 220"/>
-            </g>
-            <g>
-              <!-- Ian (16 nov 2026: «hay mucho azul»): el plato ahora es blanco como los de verdad (antes azul, s-accent) -->
-              <ellipse class="sh s-paper" cx="420" cy="430" rx="84" ry="84"/>
-              <ellipse class="st thin" cx="420" cy="430" rx="54" ry="54"/>
-              <g transform="rotate(24 430 300)"><path class="sh s-ink" d="M410 196h8v52h8v-52h8v52h8v-52h8v64a20 20 0 0 1-12 18v110a8 8 0 0 1-16 0V278a20 20 0 0 1-12-18z"/></g>
-            </g>
-          </svg>
+          <!-- Ian (22 nov 2026): productos en 3D suave tipo ilustración, imágenes que hizo Ian solo para la portada
+               (recortadas a fondo transparente; no son fotos del catálogo, para que no se repitan). Suben al entrar y flotan suave -->
+          <div class="ix-pp-stage">
+            <span class="pp-it pp-funda" style="--d:-2.6s;--r:3deg"><img src="img/inicio/3d/funda.webp" alt="" decoding="async"></span>
+            <span class="pp-it pp-plato" style="--d:-1.2s;--r:-6deg"><img src="img/inicio/3d/plato.webp" alt="" decoding="async"></span>
+            <span class="pp-it pp-tene" style="--d:-3.4s;--r:14deg"><img src="img/inicio/3d/tenedor.webp" alt="" decoding="async"></span>
+            <span class="pp-it pp-cuch" style="--d:-0.4s;--r:-12deg"><img src="img/inicio/3d/cuchara.webp" alt="" decoding="async"></span>
+            <span class="pp-it pp-tarr" style="--d:-2.0s;--r:4deg"><img src="img/inicio/3d/tarrina.webp" alt="" decoding="async"></span>
+            <span class="pp-it pp-vaso" style="--d:-0.9s;--r:6deg"><img src="img/inicio/3d/vaso.webp" alt="" decoding="async" fetchpriority="high"></span>
+            <span class="pp-it pp-cont" style="--d:-1.7s;--r:-3deg"><img src="img/inicio/3d/contenedor.webp" alt="" decoding="async"></span>
+            <span class="pp-it pp-caja" style="--d:-3.0s;--r:-4deg"><img src="img/inicio/3d/caja.webp" alt="" decoding="async"></span>
+            <span class="pp-it pp-cafe" style="--d:-2.3s;--r:-4deg"><img src="img/inicio/3d/cafe.webp" alt="" decoding="async"></span>
+            <span class="pp-it pp-cafe2" style="--d:-0.2s;--r:6deg"><img src="img/inicio/3d/cafe2.webp" alt="" decoding="async"></span>
+          </div>
+          <script>/* la animación de la portada arranca cuando las 10 imágenes ya están listas (así no aparecen a saltos) */
+          (function(){var st=document.currentScript.previousElementSibling,ok=function(){st.classList.add("ok")};
+            Promise.all([].map.call(st.querySelectorAll("img"),function(i){return i.decode?i.decode().catch(function(){}):0})).then(ok);
+            setTimeout(ok,2500)})();</script>
         </div>
       </div>
     </section>
@@ -7334,7 +7325,7 @@ html.night input,html.night select,html.night textarea{background:#1B1F1E}
 
 /* 1. Título de la portada: palabra por palabra, sube desde abajo con un leve giro (una sola vez) */
 @media (prefers-reduced-motion:no-preference){
-  .ix-hero h1.golpe .gw{display:inline-block;overflow:clip;padding-bottom:.16em;margin-bottom:-.16em;vertical-align:top}
+  .ix-hero h1.golpe .gw{display:inline-block;overflow:clip;padding-bottom:.16em;margin-bottom:-.16em;padding-right:.1em;margin-right:-.1em;vertical-align:top} /* 22 nov 2026: el padding de la derecha evita que se corte la última letra (la «s»)*/
   .ix-hero h1.golpe .gw>span{display:inline-block;transform-origin:0 100%;animation:ppGolpe .55s cubic-bezier(.23,1,.32,1) both;animation-delay:calc(var(--i) * 45ms + 80ms)}
   .ix-hero h1.golpe ~ .ix-sub,.ix-hero h1.golpe ~ .ix-ctas{animation:ppSube .5s cubic-bezier(.23,1,.32,1) both;animation-delay:calc(var(--n) * 45ms + 140ms)}
   .ix-hero h1.golpe ~ .ix-ctas{animation-delay:calc(var(--n) * 45ms + 200ms)}
@@ -7555,6 +7546,36 @@ html.night .ix-btn.ix-main:hover{background:var(--pp-acc-h);color:#0E1110}
 .ix-pp-scene .liq{fill:#2446F5;opacity:.9}
 .ix-pp-scene .bub{fill:#fff;opacity:.6}
 .ix-pp-badge{position:absolute;width:30%;right:0;top:2%}
+/* 22 nov 2026 (Ian): productos reales (fotos recortadas) sobre el disco, con sombra y flotando suave */
+.ix-pp-stage{position:absolute;inset:0}
+.pp-it{position:absolute;display:block;transform-origin:50% 70%;rotate:var(--r,0deg);will-change:transform,translate,rotate;backface-visibility:hidden}
+.pp-it img{display:block;width:100%;height:auto;filter:drop-shadow(0 16px 16px rgba(40,30,20,.22))}
+html.night .pp-it img{filter:drop-shadow(0 16px 18px rgba(0,0,0,.5))}
+.ix-hero-pp .ix-pp-disc{display:none}
+.pp-plato{width:30%;left:3%;top:3.5%;z-index:1}
+.pp-tene{width:6.5%;left:30%;top:1%;z-index:2}
+.pp-cuch{width:8.5%;left:37%;top:3%;z-index:2}
+.pp-vaso{width:22%;left:47%;top:1.5%;z-index:3}
+.pp-tarr{width:25%;left:70%;top:17%;z-index:2}
+.pp-funda{width:27%;left:72%;top:44%;z-index:3}
+.pp-cont{width:40%;left:0%;top:31.5%;z-index:4}
+.pp-caja{width:36%;left:41%;top:50%;z-index:5}
+.pp-cafe{width:17%;left:11%;top:70.5%;z-index:6}
+.pp-cafe2{width:17%;left:26%;top:72.5%;z-index:6}
+.ix-pp-badge{z-index:8}
+.ix-hero-pp .ix-pp-badge{width:24%;top:-3%;right:-5%}
+/* 22 nov 2026 (Ian: «más suave y fluida»): entrada larga con frenado suave; cada pieza flota con su propio ritmo
+   (--t), altura (--a) y un leve vaivén (--s), con curva senoidal; arranca cuando las imágenes ya cargaron (.ok) */
+@media (prefers-reduced-motion:no-preference){
+  .pp-it{animation:ppEntra 1.6s cubic-bezier(.16,1,.3,1) both,ppFlota var(--t,8s) cubic-bezier(.37,0,.63,1) infinite;animation-delay:calc(var(--i,0) * 110ms + 100ms),var(--d,0s)}
+  .ix-pp-stage:not(.ok) .pp-it{animation-play-state:paused}
+  .pp-funda{--i:0;--t:8.6s;--s:-1.2deg}.pp-plato{--i:1;--t:9.4s;--s:2deg}.pp-tarr{--i:2;--t:7.4s;--s:1.6deg}.pp-vaso{--i:3;--t:8s;--s:-1.8deg}.pp-cont{--i:4;--t:9s;--s:1deg}
+  .pp-caja{--i:5;--t:7.8s;--s:-1.4deg}.pp-tene{--i:6;--t:7s;--s:3deg}.pp-cuch{--i:7;--t:7.6s;--s:-3deg}.pp-cafe{--i:8;--t:8.2s;--s:2.2deg}.pp-cafe2{--i:9;--t:6.8s;--s:-2deg}
+  .ix-pp-badge{animation:ppGira 40s linear infinite}
+}
+@keyframes ppEntra{from{opacity:0;transform:translateY(34px) scale(.94)}}
+@keyframes ppFlota{0%,100%{translate:0 0;rotate:var(--r,0deg)}50%{translate:0 calc(var(--a,9px) * -1);rotate:calc(var(--r,0deg) + var(--s,1deg))}}
+@keyframes ppGira{to{transform:rotate(360deg)}}
 .ix-pp-badge text{font:600 15px "Instrument Sans",system-ui,sans-serif;letter-spacing:.14em;fill:var(--ink)}
 html.night .ix-pp-scene .s-clear{fill:rgba(255,255,255,.75)}
 html.night .ix-pp-disc{background:#3A403D}
@@ -7565,9 +7586,22 @@ html.night .ix-pp-disc{background:#3A403D}
   .ix-pp-grid{grid-template-rows:auto auto auto auto;gap:0}
   .ix-hero-pp .ix-hero-text{display:contents}
   /* (Ian, 14 nov) dibujo arriba y el título abajo, montado sobre la parte baja del dibujo */
-  .ix-hero-pp .ix-pp-art{grid-row:1;grid-column:1;width:min(88%,420px);justify-self:center;margin:0}
+  .ix-hero-pp .ix-pp-art{grid-row:1;grid-column:1;width:100%;max-width:520px;aspect-ratio:100/82;justify-self:center;margin:6px 0 0}
   .ix-hero-pp .ix-eyebrow{display:none}
-  .ix-hero-pp h1{grid-row:3;grid-column:1;position:relative;z-index:1;margin-top:-26px;font-size:clamp(48px,14vw,76px)}
+  .ix-hero-pp h1{grid-row:3;grid-column:1;position:relative;z-index:1;margin-top:18px;font-size:clamp(48px,14vw,76px)}
+  /* 22 nov 2026 (Ian: «mejora la presentación para móvil»): en el celular el grupo va a todo el ancho, más ancho que alto,
+     con las piezas repartidas en dos filas para que se vean grandes y el título ya no las pise */
+  .pp-it{--a:6px}
+  .pp-plato{width:27%;left:0;top:6%}
+  .pp-tene{width:5.4%;left:25%;top:0}
+  .pp-cuch{width:7%;left:30.5%;top:2%}
+  .pp-vaso{width:19%;left:42%;top:0}
+  .pp-tarr{width:27%;left:66%;top:9%}
+  .pp-cont{width:35%;left:0;top:39%}
+  .pp-funda{width:23.5%;left:75.5%;top:44%}
+  .pp-caja{width:34%;left:43%;top:52%}
+  .pp-cafe{width:14%;left:27%;top:66%}
+  .pp-cafe2{width:14%;left:38.5%;top:68.5%}
   .ix-hero-pp .ix-ctas{grid-row:4;grid-column:1;margin-top:6px}
   .ix-pp-badge{display:none}
 }
@@ -7577,6 +7611,8 @@ html.night .ix-pp-disc{background:#3A403D}
   .ix-facts li{padding:14px 12px 0 0;margin-right:12px;font-size:13px;line-height:1.35}
   .ix-facts strong{font-size:26px;margin-bottom:2px}
   .ix-pp-grid{padding-bottom:24px}
+  .ix-hero-pp .ix-ctas{flex-wrap:nowrap;gap:10px}
+  .ix-hero-pp .ix-ctas .ix-btn{flex:1 1 auto;justify-content:center;padding-left:14px;padding-right:14px;white-space:nowrap}
   .ix-hero-pp + * , .ix-lines{padding-top:40px}
 }
 
