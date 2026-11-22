@@ -3226,11 +3226,15 @@ html.night .ix-v-side{background:#2C323B}
   }
   function sqParse(q){
     var s = norm(q); SQ_PHRASE.forEach(function(r){ s = s.replace(r[0], r[1]); });
+    /* (Ian, 22 nov 2026) la gente escribe las medidas con * («3*4», «3 * 4») más que con x: *, × y x valen lo mismo;
+       una medida a medias («3*» o «3x») muestra todas las que empiezan así */
+    s = s.replace(/(\d)\s+x(?=\s|$)/g, "$1x").replace(/(\d)\s*[x×*]\s*(?=\d)/g, "$1x").replace(/(\d)\s*[×*]/g, "$1x").replace(/\*/g, " ");
     var raw = s.split(/\s+/).filter(Boolean), tk = [];
     raw.forEach(function(w, i){
       if(SQ_STOP[w]) return;
       if(i && /^(oz|litro|ml|lb|kg|cm|m|pulg|g)$/.test(w) && tk.length && tk[tk.length - 1].num){ tk[tk.length - 1].unit = w; return; }
       if(/^\d+([.,\/]\d+)?$|^\d+x\d+(\.\d+)?$/.test(w)){ tk.push({num: w.replace(",", ".")}); return; }
+      if(/^\d+([.,]\d+)?x$/.test(w)){ tk.push({num: w.replace(",", "."), pre: true}); return; }
       var syn = SQ_SYN[w] || SQ_SYN[sqStem(w)];
       var st = sqStem(w), alts = syn ? syn.map(sqStem) : [];
       alts.push(st); var fx = sqFix(st); if(fx !== st) alts.push(fx);
@@ -3241,6 +3245,7 @@ html.night .ix-v-side{background:#2C323B}
   function sqWordHit(words, alts){ for(var i = 0; i < words.length; i++) for(var k = 0; k < alts.length; k++) if(words[i].indexOf(alts[k]) === 0) return true; return false; }
   function sqNumHit(meas, t){
     var n = t.num.replace(/\./g, "[.,]");
+    if(t.pre) return new RegExp("(^|[^0-9/.,x])" + n + "[0-9]").test(meas);
     var re = new RegExp("(^|[^0-9/.,x])" + n + (t.unit ? "\\s*(" + ({oz: "oz|onzas?", litro: "litros?|lt", ml: "ml|cc", lb: "lb|libras?", m: "m\\b|mt", pulg: "pulg|\"", cm: "cm", kg: "kg", g: "g\\b"}[t.unit] || t.unit) + ")" : "(?![0-9/]|[.,][0-9])"));
     if(re.test(meas)) return true;
     /* «medio litro» y «1/2 litro»; «500 ml» y «500 cc» */
