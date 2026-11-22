@@ -2613,8 +2613,58 @@ html.night .ix-v-side{background:#2C323B}
     i.addEventListener("keydown", function(e){ if(e.key === "Escape"){ open(false); b.focus(); } });
     f.addEventListener("submit", function(e){
       e.preventDefault(); var v = i.value.trim(); if(!v){ i.focus(); return; }
-      query = v; $("cat-search").value = v; setCat(""); go("catalogo"); i.value = ""; i.blur(); open(false);
+      query = v; $("cat-search").value = v; setCat(""); go("catalogo"); i.value = ""; i.blur(); open(false); dd(false);
     });
+    /* 22 nov 2026 (Ian): mientras escribe, debajo del buscador se despliega un cuadro con los productos que coinciden
+       (y, con la casilla vacía, las búsquedas más comunes), para que el buscador no se vea vacío */
+    var box = document.createElement("div"); box.className = "hs-dd"; box.id = "hs-dd"; box.setAttribute("role", "listbox"); box.setAttribute("aria-label", "Sugerencias"); box.hidden = true;
+    f.appendChild(box); i.setAttribute("aria-controls", "hs-dd"); i.setAttribute("aria-autocomplete", "list");
+    var cur = -1, tmr = 0;
+    function dd(on){ box.hidden = !on; i.setAttribute("aria-expanded", !!on); if(!on) cur = -1; }
+    function minP(it){ var ps = (it.rows || []).filter(function(r){ return !r.out && typeof r.p === "number"; }).map(function(r){ return r.p; }); return ps.length ? Math.min.apply(null, ps) : null; }
+    function thumb(it){ var f0 = null; try{ f0 = fotoDe(it); }catch(e){} return f0 ? '<img src="'+esc(f0)+'" alt="" loading="lazy" decoding="async">' : (ART[it.p.cat] || ART["Más productos"] || ""); }
+    function fill(){
+      var v = i.value.trim(), h = "";
+      if(!v){
+        h = '<p class="hs-dd-lab">Lo más buscado</p><div class="hs-dd-chips">' + HOT.filter(function(x){ return hotOk(x[1]); }).map(function(x){ return '<button type="button" class="hc-chip" data-hot="'+esc(x[1])+'">'+esc(x[0])+'</button>'; }).join("") + '</div>';
+      } else {
+        SQ_TK = null; var tk = sqTokens(v), L = [];
+        ITEMS.forEach(function(it){ if(!it.rows || it.p.other) return; var sc = sqScore(it, tk); if(sc <= 0) return;
+          /* primero lo que se llama así (la línea o el nombre), luego lo que solo lo menciona */
+          var cw = norm(it.p.cat).split(/\s+/), nw = norm(it.p.name).split(/\s+/);
+          tk.forEach(function(t){ if(!t.alts) return; if(sqWordHit(cw, t.alts)) sc += 8; else if(sqWordHit(nw.slice(0, 1), t.alts)) sc += 5; else if(sqWordHit(nw, t.alts)) sc += 2; });
+          L.push({it: it, s: sc}); });
+        L.sort(function(a, b){ return b.s - a.s || itemTitle(a.it).length - itemTitle(b.it).length; });
+        if(L.length){
+          h = '<p class="hs-dd-lab">Productos</p>' + L.slice(0, 6).map(function(x, k){ var it = x.it, pr = minP(it);
+            return '<button type="button" class="hs-dd-it" role="option" id="hs-o'+k+'" data-hsq="'+esc(itemTitle(it))+'"><span class="hs-dd-th" aria-hidden="true">'+thumb(it)+'</span>'
+              + '<span class="hs-dd-tx"><b>'+esc(itemTitle(it))+'</b><small>'+esc(it.p.cat)+(it.p.pres ? ' · ' + esc(it.p.pres) : '')+'</small></span>'
+              + (pr !== null ? '<span class="hs-dd-pr">'+fmt(pr)+'</span>' : '') + '</button>'; }).join("")
+            + '<button type="button" class="hs-dd-all" data-hsall>Ver los '+L.length+' resultados de «'+esc(v)+'» →</button>';
+        } else {
+          var S = sqSuggest(v);
+          h = '<p class="hs-dd-lab">No encontramos «'+esc(v)+'»</p>' + (S.length ? '<p class="hs-dd-sub">¿Quisiste decir…?</p><div class="hs-dd-chips">' + S.map(function(x){ return x.go ? '<button type="button" class="hc-chip" data-hot="'+esc(x.go)+'">'+esc(x.t)+'</button>' : '<button type="button" class="hc-chip" data-hsq="'+esc(x.q)+'">'+esc(x.t)+'</button>'; }).join("") + '</div>' : '')
+            + '<p class="hs-dd-sub">Si no está en el catálogo, agrégalo en tu pedido como «Otro producto» y te lo cotizamos.</p>';
+        }
+      }
+      box.innerHTML = h; cur = -1; dd(true);
+    }
+    function goQ(v){ query = v; $("cat-search").value = v; SQ_TK = null; setCat(""); go("catalogo"); i.value = ""; i.blur(); open(false); dd(false); }
+    i.addEventListener("input", function(){ clearTimeout(tmr); tmr = setTimeout(fill, 90); });
+    i.addEventListener("focus", fill);
+    i.addEventListener("keydown", function(e){
+      if(box.hidden) return; var os = box.querySelectorAll(".hs-dd-it");
+      if(e.key === "ArrowDown" || e.key === "ArrowUp"){ if(!os.length) return; e.preventDefault(); var n = os.length + 1; cur = ((cur + 1 + (e.key === "ArrowDown" ? 1 : -1)) % n + n) % n - 1; os.forEach(function(o, k){ o.classList.toggle("on", k === cur); }); if(cur > -1){ i.setAttribute("aria-activedescendant", os[cur].id); os[cur].scrollIntoView({block: "nearest"}); } else i.removeAttribute("aria-activedescendant"); }
+      else if(e.key === "Enter" && cur > -1 && os[cur]){ e.preventDefault(); goQ(os[cur].dataset.hsq); }
+      else if(e.key === "Escape") dd(false);
+    });
+    box.addEventListener("mousedown", function(e){ e.preventDefault(); }); /* que el clic no cierre el cuadro antes de tiempo */
+    box.addEventListener("click", function(e){
+      var o = e.target.closest("[data-hsq]"); if(o){ goQ(o.dataset.hsq); return; }
+      if(e.target.closest("[data-hsall]")){ goQ(i.value.trim()); return; }
+      if(e.target.closest("[data-hot]")){ i.value = ""; i.blur(); open(false); dd(false); }
+    });
+    i.addEventListener("blur", function(){ setTimeout(function(){ if(document.activeElement !== i) dd(false); }, 120); });
   })();
 
   /* ---------- catálogo: una tarjeta por medida ---------- */
@@ -6798,6 +6848,23 @@ html.night #hl-big .hl-card:hover{box-shadow:0 18px 34px -16px rgba(0,0,0,.6)}
 .hs{position:relative;display:flex;align-items:center;margin:0 4px 0 0}
 .hs-ic{position:absolute;left:12px;top:50%;translate:0 -50%;width:18px;height:18px;color:var(--muted);pointer-events:none;display:grid}
 .hs-ic svg,.hs-btn svg{width:18px;height:18px}
+.hs-dd{position:absolute;top:calc(100% + 8px);right:0;width:min(420px,calc(100vw - 32px));max-height:min(70vh,520px);overflow:auto;z-index:60;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 40px -16px rgba(23,33,43,.35);padding:8px}
+.hs-dd[hidden]{display:none}
+.hs-dd-lab{margin:6px 8px 6px;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--muted)}
+.hs-dd-sub{margin:4px 8px 8px;font-size:.86rem;color:var(--muted);line-height:1.4}
+.hs-dd-chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 6px 6px}
+.hs-dd .hc-chip{background:var(--bg);border:1px solid var(--line);color:var(--ink);box-shadow:none}.hs-dd .hc-chip:hover{border-color:var(--sky);color:var(--sky)}
+.hs-dd-it{display:flex;align-items:center;gap:12px;width:100%;padding:8px;border:0;border-radius:12px;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.hs-dd-it:hover,.hs-dd-it.on{background:var(--bg)}
+.hs-dd-th{width:44px;height:44px;flex:none;border-radius:10px;background:var(--bg);display:grid;place-items:center;overflow:hidden}
+.hs-dd-th img{width:100%;height:100%;object-fit:contain}
+.hs-dd-th svg{width:30px;height:30px}
+.hs-dd-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.hs-dd-tx b{font-weight:600;font-size:.92rem;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hs-dd-tx small{font-size:.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hs-dd-pr{font-weight:600;font-size:.9rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.hs-dd-all{display:block;width:100%;margin-top:4px;padding:11px 8px;border:0;border-top:1px solid var(--line);background:none;color:var(--sky);font:inherit;font-weight:600;font-size:.9rem;text-align:left;cursor:pointer;border-radius:0 0 10px 10px}
+.hs-dd-all:hover{background:var(--bg)}
 .hs input[type=search]{width:240px;height:40px;min-height:0;padding:0 14px 0 38px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-size:.92rem;transition:border-color .2s ease,width .25s cubic-bezier(.2,.7,.2,1)}
 .hs input[type=search]:focus{outline:none;border-color:var(--sky);width:300px}
 .hs-btn{display:none;width:44px;height:44px;flex:none;place-items:center;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;padding:0}
@@ -6807,6 +6874,7 @@ html.night #hl-big .hl-card:hover{box-shadow:0 18px 34px -16px rgba(0,0,0,.6)}
   .hs-btn{display:inline-grid}
   .hs{display:none;position:absolute;left:0;right:0;top:100%;margin:0;padding:10px 16px 12px;background:var(--surface);border-bottom:1px solid var(--line);box-shadow:0 10px 24px -14px rgba(23,33,43,.25)}
   body.hs-open .hs{display:flex}
+  .hs-dd{left:16px;right:16px;width:auto;top:calc(100% - 2px);max-height:min(62vh,480px)}
   .hs-ic{left:30px}
   .hs input[type=search],.hs input[type=search]:focus{width:100%;height:46px;font-size:16px}
   body.hs-open .hs-btn{border-color:var(--sky);color:var(--sky)}
