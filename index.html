@@ -268,7 +268,7 @@ section.band .wrap{padding-block:64px}
 /* Pedido */
 .order-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:22px;align-items:start}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px;min-width:0}
-.panel.builder{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);border-color:var(--sky-mid)}
+.panel.builder{border-color:var(--sky-mid)} /* 22 nov 2026 (Ian): el carrito ya no se queda pegado al hacer scroll */
 .panel-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .panel-head h3{font-weight:800;font-variation-settings:"wdth" 112;font-size:1.35rem}
 .step-tag{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sky);display:block;margin-bottom:4px}
@@ -540,6 +540,12 @@ html.night .vt{--stage-hi:#2A2338;--floor:rgba(0,0,0,.5)}
 .ci-unit{font-size:.75rem;color:var(--muted)}
 .ci-remove{background:none;border:0;color:var(--muted);font-size:.78rem;cursor:pointer;text-decoration:underline;padding:0;font-family:var(--body)}
 .ci-remove:hover{color:var(--danger)}
+/* 22 nov 2026 (Ian): «Eliminar» bien visible en cada producto del carrito */
+.g-rm{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font:600 .82rem var(--body);cursor:pointer;transition:color .15s,border-color .15s,background .15s}
+.g-rm svg{width:16px;height:16px}
+.g-rm:hover,.g-rm:focus-visible{color:var(--danger);border-color:var(--danger);background:color-mix(in srgb,var(--danger) 8%,transparent)}
+.g-rm.sm{min-height:32px;padding:0 10px;font-size:.78rem}
+@media (max-width:540px){.g-rm .g-rm-t{display:none}.g-rm{width:40px;height:40px;padding:0;justify-content:center}}
 .total{display:flex;justify-content:space-between;gap:12px;align-items:baseline;border-top:2px solid var(--sky-mid);padding-top:10px;font-weight:600}
 .total small{font-weight:400;color:var(--muted)}
 .total b{font-variant-numeric:tabular-nums;font-size:1.1rem}
@@ -6220,7 +6226,7 @@ html.night .ix-v-side{background:#2C323B}
     var pr = ln.bk ? esc(bkText(ln.bk.n, ln.bk.s, ln.bk.w, it.units[0])) + ' · ' + bkPriceText(it, ln, x)
       : x !== null ? 'Ref. <b>'+fmt(x)+'</b> c/u · Subtotal <b>'+fmt(x*ln.qty)+'</b>' : (base ? 'Precio en la proforma' : 'Precio por '+esc(ln.unit.toLowerCase())+' en la proforma');
     return '<div class="line simple" '+at+'>'+(sel ? '<p class="ls-sel">'+esc(sel)+'</p>' : '')+q+'<p class="line-info">'+pr+'</p>'
-      + '<div class="ls-act"><button type="button" class="lk" '+at+' data-edit="1">Cambiar</button><button type="button" class="ci-remove" '+at+' data-rm="line">Quitar</button></div></div>';
+      + '<div class="ls-act"><button type="button" class="lk" '+at+' data-edit="1">Cambiar</button>'+(g.lines.length > 1 ? '<button type="button" class="ci-remove" '+at+' data-rm="line">Quitar</button>' : '')+'</div></div>';
   }
   function lineHTML(g, gi, li){
     if(!g.other && presMode(ITEM[g.key])) return presHTML(g, gi, li);
@@ -6270,7 +6276,7 @@ html.night .ix-v-side{background:#2C323B}
       + (units.length > 1 && !(simp && ln.unit === units[0]) ? '<div class="seg" role="radiogroup" aria-label="Comprar por">'+units.map(function(u){ return '<label><input type="radio" name="u-'+gi+'-'+li+'" data-g="'+gi+'" data-l="'+li+'" data-f="unit" value="'+esc(u)+'"'+(ln.unit === u ? ' checked' : '')+'><span>Por '+esc(u.toLowerCase())+'</span></label>'; }).join("")+'</div>' : '')
       + '<div class="ci-qty"><button type="button" data-g="'+gi+'" data-l="'+li+'" data-d="-1" aria-label="Menos">−</button><input class="qin" type="text" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off" value="'+ln.qty+'" data-qin="1" data-g="'+gi+'" data-l="'+li+'" aria-label="Cantidad"><button type="button" data-g="'+gi+'" data-l="'+li+'" data-d="1" aria-label="Más">+</button></div>'
       + '<span class="ci-unit">'+esc(unitWord(ln.unit, ln.qty))+'</span>'
-      + '<button type="button" class="ci-remove" data-g="'+gi+'" data-l="'+li+'" data-rm="line">'+(many ? 'Quitar combinación' : 'Quitar')+'</button></div>';
+      + (many ? '<button type="button" class="ci-remove" data-g="'+gi+'" data-l="'+li+'" data-rm="line">Quitar combinación</button>' : '')+'</div>';
     if(simp) foot += '<div class="ls-act">'+(B0 || ln.bk ? '<button type="button" class="lk" data-g="'+gi+'" data-l="'+li+'" data-cbk="1">'+(ln.bk ? 'Por paquetes' : 'Por '+B0.w+' · 1 '+B0.w+' = '+B0.pb+' paquetes')+'</button>' : '')
       + (st && st.complete ? '<button type="button" class="btn btn-soft" data-g="'+gi+'" data-l="'+li+'" data-done="1">Listo</button>' : '')+'</div>';
     return '<div class="line'+(miss ? ' miss' : '')+'" data-g="'+gi+'" data-l="'+li+'">'+(many ? '<span class="line-n">Combinación '+(li+1)+'</span>' : '')+html+foot+info+'</div>';
@@ -6285,12 +6291,13 @@ html.night .ix-v-side{background:#2C323B}
     out = nudgeText(t, q);
     return out ? '<p class="nudge">'+out+'</p>' : "";
   }
+  var TRASH_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>';
   function canMore(g){ var it = ITEM[g.key]; return !g.other && it && (it.rows ? it.rows.filter(function(r){ return !r.out; }).length > 1 : (!it.p.detail && it.p.variants.length > 1) || it.p.detail); }
   function renderGroups(){
     $("groups").innerHTML = cart.map(function(g, gi){
       var it = g.other ? null : ITEM[g.key];
       return '<li class="group"><div class="g-head"><div><small>'+esc(g.other ? "Otro producto" : it.rows ? (it.grp || it.p.name) : it.p.cat)+'</small><b>'+esc(g.other ? "A cotizar" : it.rows ? (it.full || it.m) : it.p.name)+'</b></div>'
-        + (simpleItem(it) && g.lines.length === 1 ? '' : '<button type="button" class="ci-remove" data-g="'+gi+'" data-rm="group">Quitar producto</button>')+'</div>'
+        + '<button type="button" class="g-rm" data-g="'+gi+'" data-rm="group" aria-label="Eliminar '+esc(g.other ? (g.text || "producto") : it.rows ? (it.full || it.m) : it.p.name)+' del carrito">'+TRASH_SVG+'<span class="g-rm-t">Eliminar</span></button></div>'
         + g.lines.map(function(_, li){ return lineHTML(g, gi, li); }).join("")
         + nudgeHTML(g)
         + (simpleItem(it) ? '' : !g.other && presMode(it) ? (presCanMore(it) ? '<button type="button" class="btn btn-soft addline" data-g="'+gi+'" data-more="1">'+esc(presMoreLabel(it))+'</button>' : '')
