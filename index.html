@@ -544,8 +544,23 @@ html.night .vt{--stage-hi:#2A2338;--floor:rgba(0,0,0,.5)}
 .g-rm{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font:600 .82rem var(--body);cursor:pointer;transition:color .15s,border-color .15s,background .15s}
 .g-rm svg{width:16px;height:16px}
 .g-rm:hover,.g-rm:focus-visible{color:var(--danger);border-color:var(--danger);background:color-mix(in srgb,var(--danger) 8%,transparent)}
-.g-rm.sm{min-height:32px;padding:0 10px;font-size:.78rem}
-@media (max-width:540px){.g-rm .g-rm-t{display:none}.g-rm{width:40px;height:40px;padding:0;justify-content:center}}
+.g-rm{width:38px;height:38px;padding:0;justify-content:center;min-height:0}
+#groups.groups{gap:0;border-top:1px solid var(--line)}
+#groups .group.ci{border:0;border-bottom:1px solid var(--line);border-radius:0;padding:0;gap:0;background:transparent}
+.ci-top{display:flex;align-items:center;gap:8px}
+.ci-row{flex:1;min-width:0;display:flex;align-items:center;gap:12px;background:none;border:0;padding:14px 4px;text-align:left;color:var(--ink);font-family:var(--body);cursor:pointer;border-radius:10px}
+.ci-row:hover .ci-ed{color:var(--sky)}
+.ci-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.ci-txt b{font-weight:600;font-size:.98rem;line-height:1.3}
+.ci-txt small{font-size:.84rem;color:var(--muted);line-height:1.4}
+.ci-txt .pending{color:#C98A00}
+.ci-amt{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.ci-amt b{font-weight:700;font-variant-numeric:tabular-nums;font-size:.98rem}
+.ci-ed{display:inline-flex;align-items:center;gap:2px;font-size:.76rem;color:var(--muted)}
+.ci-ed svg{width:14px;height:14px;transition:transform .2s}
+.ci.open .ci-ed svg{transform:rotate(180deg)}
+.ci-edit{display:flex;flex-direction:column;gap:12px;padding:4px 4px 16px}
+#builder-total{margin-top:2px}
 .total{display:flex;justify-content:space-between;gap:12px;align-items:baseline;border-top:2px solid var(--sky-mid);padding-top:10px;font-weight:600}
 .total small{font-weight:400;color:var(--muted)}
 .total b{font-variant-numeric:tabular-nums;font-size:1.1rem}
@@ -1808,7 +1823,7 @@ html.night .ix-v-side{background:#2C323B}
           <div>
             <p class="eyebrow">Hacer pedido</p>
             <h2>Arma tu orden de pedido</h2>
-            <p>Elige las opciones de cada producto (color, tapa, acabado…), revisa tu lista y envíala por WhatsApp. Te respondemos con la proforma.</p>
+            <p>Revisa tu lista y envíala por WhatsApp. Si quieres cambiar algo, toca el producto. Te respondemos con la proforma.</p>
           </div>
           <a class="btn btn-ghost" href="#catalogo" data-go="catalogo">Ver catálogo</a>
         </div>
@@ -1831,6 +1846,7 @@ html.night .ix-v-side{background:#2C323B}
                 <a href="#catalogo" data-go="catalogo" data-cat="Aseo e higiene">Aseo</a>
               </nav></div>
             <ul class="groups" id="groups"></ul>
+            <div class="total" id="cart-total" hidden></div>
             <details class="other-box" id="other-box">
               <summary>¿No encuentras algo? Escríbelo</summary>
               <div class="row">
@@ -1842,16 +1858,11 @@ html.night .ix-v-side{background:#2C323B}
           </div>
 
           <div class="panel" id="summary" aria-labelledby="s-title">
-            <div class="panel-head">
-              <div><span class="step-tag">Paso 2</span><h3 id="s-title">Resumen</h3></div>
-            </div>
-            <p class="cart-empty" id="sum-empty">Aquí verás tu lista con cantidades y precios referenciales.</p>
+            <p class="cart-empty" id="sum-empty" hidden></p>
             <ul class="sum-list" id="cart-list" hidden></ul>
-            <div class="total" id="cart-total" hidden></div>
-
-            <hr class="divider">
+            <h3 id="s-title" class="sr">Tus datos</h3>
             <form id="order-form" novalidate style="display:flex;flex-direction:column;gap:12px">
-              <div><span class="step-tag">Paso 3</span><h3 style="font-weight:800;font-variation-settings:'wdth' 112;font-size:1.35rem">Tus datos</h3></div>
+              <div><span class="step-tag">Paso 2</span><h3 style="font-weight:800;font-variation-settings:'wdth' 112;font-size:1.35rem">Tus datos</h3></div>
               <div class="row2">
                 <label class="field"><span>Nombre <b class="req">*</b></span><input type="text" id="c-name" autocomplete="name" placeholder="Ej. María Torres"></label>
                 <label class="field"><span>Teléfono / WhatsApp <b class="req">*</b></span><input type="tel" id="c-phone" autocomplete="tel" placeholder="09xxxxxxxx"></label>
@@ -6188,7 +6199,7 @@ html.night .ix-v-side{background:#2C323B}
       html += '<div class="field"><span>Presentación y cantidad</span><ul class="pres-list">'+ps.list.map(function(o){
         var inf = o.row ? it.p.info[o.row.v] : null, pr = o.row && base && typeof o.row.p === "number" ? o.row.p : null;
         if(!o.row) return o.out ? '<li class="off"><div class="pl-t"><b>'+esc(o.x)+'</b><small>Sin stock</small></div></li>' : '';
-        var sub = [pr !== null ? fmt(pr)+' c/u' : base ? 'Precio en la proforma' : 'Precio por '+esc(ln.unit.toLowerCase())+' en la proforma', inf && inf.code ? 'cód. '+esc(inf.code) : ''].filter(Boolean).join(' · ');
+        var sub = [pr !== null ? fmt(pr)+' c/u' : base ? 'Precio en la proforma' : 'Precio por '+esc(ln.unit.toLowerCase())+' en la proforma', ''].filter(Boolean).join(' · ');
         return '<li'+(o.q ? ' class="on"' : '')+'><div class="pl-t"><b>'+esc(o.x)+'</b><small>'+sub+'</small>'+(o.q && pr !== null ? '<small class="pl-s">Subtotal <b>'+fmt(pr*o.q)+'</b></small>' : '')+'</div>'
           + '<div class="ci-qty" role="group" aria-label="Cantidad de '+esc(o.x)+'"><button type="button" data-g="'+gi+'" data-l="'+li+'" data-px="'+esc(o.x)+'" data-pd="-1" aria-label="Menos"'+(o.q ? '' : ' disabled')+'>−</button><input class="qin" type="text" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off" value="'+o.q+'" data-pin="'+esc(o.x)+'" data-g="'+gi+'" data-l="'+li+'" aria-label="Cantidad"><button type="button" data-g="'+gi+'" data-l="'+li+'" data-px="'+esc(o.x)+'" data-pd="1" aria-label="Más">+</button></div></li>';
       }).join("")+'</ul>'+(function(){ var no = ps.list.filter(function(o){ return !o.row && !o.out; }).map(function(o){ return o.x; });
@@ -6250,10 +6261,10 @@ html.night .ix-v-side{background:#2C323B}
         var i = it.p.info[st.row.v] || {}, x = linePrice(it, ln, st, groupQty(g));
         if(i.tapa){
           var base = ln.unit === it.units[0], tq = tapaQty(i, ln, base);
-          info = '<p class="line-info">'+['Código <b>'+esc(i.code || "—")+'</b> + tapa <b>'+esc(i.tapa.code || i.tapa.name)+'</b>', st.row.pres ? esc(st.row.pres) + (base && i.tapa.ratio !== 1 ? ' + ' + esc(unitText(i.tapa.unit, tq)) + ' de tapas' : '') : '',
+          info = '<p class="line-info">'+['Con tapa', st.row.pres ? esc(st.row.pres) + (base && i.tapa.ratio !== 1 ? ' + ' + esc(unitText(i.tapa.unit, tq)) + ' de tapas' : '') : '',
             x !== null ? 'Ref. <b>'+fmt(x)+'</b> c/u · Subtotal <b>'+fmt(x*ln.qty)+'</b>' : (base ? 'Precio en la proforma' : 'Precio por '+esc(ln.unit.toLowerCase())+' en la proforma')].filter(Boolean).join(' · ')+'</p>';
         } else
-        info = '<p class="line-info">'+[i.code ? 'Código <b>'+esc(i.code)+'</b>' : '', i.tier && ln.unit === "Bulto" && i.tier.pb ? 'Bulto de '+i.tier.pb+' paquetes' : st.row.pres ? esc(st.row.pres) : '', x !== null ? 'Ref. <b>'+fmt(x)+'</b> c/u · Subtotal <b>'+fmt(x*ln.qty)+'</b>' : (ln.unit !== it.units[0] ? 'Precio por '+esc(ln.unit.toLowerCase())+' en la proforma' : 'Precio en la proforma')].filter(Boolean).join(' · ')+'</p>';
+        info = '<p class="line-info">'+[i.tier && ln.unit === "Bulto" && i.tier.pb ? 'Bulto de '+i.tier.pb+' paquetes' : st.row.pres ? esc(st.row.pres) : '', x !== null ? 'Ref. <b>'+fmt(x)+'</b> c/u · Subtotal <b>'+fmt(x*ln.qty)+'</b>' : (ln.unit !== it.units[0] ? 'Precio por '+esc(ln.unit.toLowerCase())+' en la proforma' : 'Precio en la proforma')].filter(Boolean).join(' · ')+'</p>';
       } else { miss = true; info = '<p class="line-info todo">'+(st.missing.length ? 'Elige '+esc(joinY(st.missing))+' para ver el precio.' : 'Elige las opciones para ver el precio.')+'</p>'; }
     } else if(g.other){
       html += '<label class="field"><span>Producto y medida</span><input type="text" data-g="'+gi+'" data-l="'+li+'" data-f="text" value="'+esc(g.text)+'"></label>';
@@ -6293,22 +6304,42 @@ html.night .ix-v-side{background:#2C323B}
   }
   var TRASH_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>';
   function canMore(g){ var it = ITEM[g.key]; return !g.other && it && (it.rows ? it.rows.filter(function(r){ return !r.out; }).length > 1 : (!it.p.detail && it.p.variants.length > 1) || it.p.detail); }
+  /* 22 nov 2026 (Ian): el carrito es el resumen. Cada producto en una fila (nombre, opciones, cantidad, precio y eliminar);
+     al tocar la fila se abre para editar. Si le falta elegir algo, se abre solo. */
+  var cartOpen = {};
+  var CHEV_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
   function renderGroups(){
     $("groups").innerHTML = cart.map(function(g, gi){
-      var it = g.other ? null : ITEM[g.key];
-      return '<li class="group"><div class="g-head"><div><small>'+esc(g.other ? "Otro producto" : it.rows ? (it.grp || it.p.name) : it.p.cat)+'</small><b>'+esc(g.other ? "A cotizar" : it.rows ? (it.full || it.m) : it.p.name)+'</b></div>'
-        + '<button type="button" class="g-rm" data-g="'+gi+'" data-rm="group" aria-label="Eliminar '+esc(g.other ? (g.text || "producto") : it.rows ? (it.full || it.m) : it.p.name)+' del carrito">'+TRASH_SVG+'<span class="g-rm-t">Eliminar</span></button></div>'
-        + g.lines.map(function(_, li){ return lineHTML(g, gi, li); }).join("")
-        + nudgeHTML(g)
-        + (simpleItem(it) ? '' : !g.other && presMode(it) ? (presCanMore(it) ? '<button type="button" class="btn btn-soft addline" data-g="'+gi+'" data-more="1">'+esc(presMoreLabel(it))+'</button>' : '')
-          : canMore(g) ? '<button type="button" class="btn btn-soft addline" data-g="'+gi+'" data-more="1">+ Otra combinación</button>' : '')
+      var it = g.other ? null : ITEM[g.key], L = groupLines(g), ok = L.length && L.every(function(x){ return x.ok; });
+      var open = !!cartOpen[g.key] || !ok;
+      var title = g.other ? (g.text || "Otro producto") : itemTitle(it);
+      var subs = L.filter(function(x){ return x.ok; }).map(function(x){
+        var o = (x.opts !== undefined ? x.opts : (x.detail === "—" ? "" : x.detail)) || "";
+        o = o.replace(/Paquete x\s*(\d+)/i, "paquete de $1");
+        return [o, x.qty ? (x.qt || unitText(x.unit, x.qty)) : ""].filter(Boolean).join(" · ");
+      });
+      var pr = L.filter(function(x){ return x.ok && x.price !== null; }), sum = pr.reduce(function(a, x){ return a + x.price * x.qty; }, 0);
+      var amt = !ok ? '' : pr.length ? fmt(sum) : 'A cotizar';
+      var sub = !ok ? '<span class="pending">Falta elegir opciones</span>' : subs.map(esc).join("<br>");
+      var name = esc(title);
+      return '<li class="group ci'+(open ? ' open' : '')+'">'
+        + '<div class="ci-top"><button type="button" class="ci-row" data-g="'+gi+'" data-tog="1" aria-expanded="'+open+'"><span class="ci-txt"><b>'+name+'</b><small>'+sub+'</small></span>'
+        + '<span class="ci-amt">'+(amt ? '<b>'+amt+'</b>' : '')+(ok ? '<span class="ci-ed">'+(open ? 'Cerrar' : 'Editar')+CHEV_SVG+'</span>' : '')+'</span></button>'
+        + '<button type="button" class="g-rm" data-g="'+gi+'" data-rm="group" aria-label="Eliminar '+name+' del carrito">'+TRASH_SVG+'</button></div>'
+        + (open ? '<div class="ci-edit">'
+          + g.lines.map(function(_, li){ return lineHTML(g, gi, li); }).join("")
+          + nudgeHTML(g)
+          + (simpleItem(it) ? '' : !g.other && presMode(it) ? (presCanMore(it) ? '<button type="button" class="btn btn-soft addline" data-g="'+gi+'" data-more="1">'+esc(presMoreLabel(it))+'</button>' : '')
+            : canMore(g) ? '<button type="button" class="btn btn-soft addline" data-g="'+gi+'" data-more="1">+ Otra combinación</button>' : '')
+          + '</div>' : '')
         + '</li>';
     }).join("");
   }
   /* líneas listas para la orden */
-  function orderLines(){
+  function orderLines(){ return cart.reduce(function(a, g){ return a.concat(groupLines(g)); }, []); }
+  function groupLines(g){
     var out = [];
-    cart.forEach(function(g){
+    (function(){
       g.lines.forEach(function(ln){
         if(g.other){ out.push({name: g.text, detail: "—", unit: ln.unit, qty: ln.qty, price: null, code: "", ok: !!g.text.trim(), title: g.text}); return; }
         var it = ITEM[g.key], p = it.p;
@@ -6336,7 +6367,7 @@ html.night .ix-v-side{background:#2C323B}
           out.push({name: p.name, detail: d || "Medida por confirmar", unit: ln.unit, qty: ln.qty, price: null, code: "", ok: !!ln.variant || p.detail || p.variants.length < 2, title: p.name});
         }
       });
-    });
+    })();
     return out;
   }
   /* v175: el total referencial cuenta hasta el nuevo valor (Value Change) */
@@ -6353,8 +6384,8 @@ html.night .ix-v-side{background:#2C323B}
   }
   function renderSummary(){
     var L = orderLines();
-    $("sum-empty").hidden = L.length > 0; $("cart-list").hidden = !L.length;
-    $("cart-list").innerHTML = L.map(function(x){
+    $("cart-list").hidden = true;
+    if(0) $("cart-list").innerHTML = L.map(function(x){
       return '<li><span>'+esc(x.title)+'<small>'+(x.ok ? esc(x.opts !== undefined ? x.opts : (x.detail === "—" ? "" : x.detail)) : '<span class="pending">Falta elegir opciones</span>')+'</small></span><b>'+esc(x.qty ? (x.qt || unitText(x.unit, x.qty)) : "—")+(x.ok && x.price !== null ? '<small>'+fmt(x.price*x.qty)+'</small>' : '')+'</b></li>';
     }).join("");
     var pr = L.filter(function(x){ return x.ok && x.price !== null; }), miss = L.length - pr.length;
@@ -6379,11 +6410,12 @@ html.night .ix-v-side{background:#2C323B}
   $("groups").addEventListener("click", function(e){
     var b = e.target.closest("button"); if(!b || b.disabled) return;
     var gi = +b.dataset.g, g = cart[gi]; if(!g) return;
-    if(b.dataset.rm === "group"){ cart.splice(gi, 1); save(); renderCart(); renderCatalog(); return; }
+    if(b.dataset.tog){ if(cartOpen[g.key]) delete cartOpen[g.key]; else cartOpen[g.key] = 1; renderGroups(); refocus('.ci-row[data-g="'+gi+'"]'); return; }
+    if(b.dataset.rm === "group"){ delete cartOpen[g.key]; cart.splice(gi, 1); save(); renderCart(); renderCatalog(); return; }
     if(b.dataset.more){ g.lines.push(newLine(ITEM[g.key], g.lines.map(function(l){ return l.sel && l.sel.c; }))); save(); renderCart(); refocus('.line[data-g="'+gi+'"][data-l="'+(g.lines.length-1)+'"] button, .line[data-g="'+gi+'"][data-l="'+(g.lines.length-1)+'"] select'); return; }
     var o = lineOf(b); if(!o || !o.ln) return;
     if(b.dataset.edit){ o.ln.edit = true; save(); renderCart(); refocus('.line[data-g="'+gi+'"][data-l="'+b.dataset.l+'"] button'); return; }
-    if(b.dataset.done){ delete o.ln.edit; save(); renderCart(); refocus('.line[data-g="'+gi+'"][data-l="'+b.dataset.l+'"] [data-edit]'); return; }
+    if(b.dataset.done){ delete o.ln.edit; delete cartOpen[g.key]; save(); renderCart(); refocus('.line[data-g="'+gi+'"][data-l="'+b.dataset.l+'"] [data-edit]'); return; }
     if(b.dataset.cbk){ var it4 = ITEM[g.key], st4 = lineState(it4, o.ln), B4 = st4.row ? bkOf(it4, it4.p.info[st4.row.v]) : null;
       if(o.ln.bk){ delete o.ln.bk; o.ln.qty = 1; } else if(B4){ o.ln.unit = it4.units[0]; o.ln.bk = {n: 1, s: 0, w: B4.w, pb: B4.pb}; o.ln.qty = B4.pb; }
       save(); renderCart(); refreshAdd(g.key); refocus('.line[data-g="'+gi+'"][data-l="'+b.dataset.l+'"] [data-cbk]'); return; }
