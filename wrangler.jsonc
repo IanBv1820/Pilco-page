@@ -1,0 +1,15 @@
+{
+  // Worker de la página (Cloudflare, se publica desde la rama main)
+  "name": "descartables-pyp",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-11-19",
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": ["/", "/index.html", "/api/*"]
+  },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "pilco-cargador", "database_id": "8becf168-363e-4939-ab32-d7df33f5ae8c" }
+  ],
+  "observability": { "enabled": true }
+}

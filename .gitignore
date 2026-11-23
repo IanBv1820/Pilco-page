@@ -6,5 +6,7 @@
 !/.nojekyll
 !/README.md
 !/admin/
-!/functions/
+!/worker/
+!/wrangler.jsonc
+!/.assetsignore
 !/lib/
