@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Cargador de productos</title>
+<title>Administrador de productos</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -205,7 +205,7 @@ tr.mstart td{border-top:2px solid var(--sky-mid)}
 
 <header class="top">
   <div class="wrap">
-    <div class="brand"><b>Pilco<span>&amp;</span>Pilco</b><small>Cargador de productos</small></div>
+    <div class="brand"><b>Pilco<span>&amp;</span>Pilco</b><small>Administrador de productos</small></div>
     <div class="top-actions">
       <span class="status" id="status" aria-live="polite">Conectando…</span>
       <button class="btn btn-ghost" type="button" id="export">Descargar todo (CSV)</button>
@@ -227,7 +227,7 @@ tr.mstart td{border-top:2px solid var(--sky-mid)}
     <main class="editor" id="editor">
       <div class="panel welcome" id="welcome">
         <h2>Elige una familia o crea una nueva</h2>
-        <p>Una familia es un grupo de productos parecidos, por ejemplo «Tarrinas térmicas». Le escribes sus medidas y opciones una sola vez; el cargador arma cada artículo y tú solo llenas código y precios. Todo se guarda solo.</p>
+        <p>Una familia es un grupo de productos parecidos, por ejemplo «Tarrinas térmicas». Le escribes sus medidas y opciones una sola vez; el administrador arma cada artículo y tú solo llenas código y precios. Todo se guarda solo.</p>
       </div>
 
       <div id="form" hidden>
@@ -318,8 +318,8 @@ tr.mstart td{border-top:2px solid var(--sky-mid)}
 
 <div class="backdrop" id="login" hidden role="dialog" aria-modal="true" aria-labelledby="login-t">
   <form class="sheet" id="login-f" style="max-width:380px">
-    <h2 id="login-t">Entrar al cargador</h2>
-    <p class="hint">Escribe la clave del cargador. Queda abierto 30 días en este dispositivo.</p>
+    <h2 id="login-t">Entrar al administrador</h2>
+    <p class="hint">Escribe la clave del administrador. Queda abierto 30 días en este dispositivo.</p>
     <input type="password" id="login-c" autocomplete="current-password" aria-label="Clave" required>
     <p class="hint" id="login-m" aria-live="polite" style="color:var(--danger)"></p>
     <button class="btn btn-primary" type="submit">Entrar</button>
@@ -1036,8 +1036,8 @@ window.CF = (function(){
     return col.doc(cur.id).set(body(cur)).then(function(){
       setStatus("Guardado ✓", "ok");
     }, function(e){
-      if(e && e.code === "invalid_argument"){ setReadOnly("No tienes permiso para guardar en este cargador."); }
-      else if(e && e.code === "quota_exceeded"){ setStatus("Sin espacio", "err"); banner("Se llenó el espacio del cargador. Borra familias que ya no uses."); }
+      if(e && e.code === "invalid_argument"){ setReadOnly("No tienes permiso para guardar en este administrador."); }
+      else if(e && e.code === "quota_exceeded"){ setStatus("Sin espacio", "err"); banner("Se llenó el espacio del administrador. Borra familias que ya no uses."); }
       else { setStatus("No se guardó", "err"); again = true; }
     }).then(function(){
       saving = false;
@@ -1113,7 +1113,7 @@ window.CF = (function(){
   use("downloads").then(function(d){ downloads = d; $("export").hidden = !d; });
   use("user").then(function(u){ if(u && u.canEdit && u.canEdit() === false) setReadOnly("Puedes ver los productos, pero solo los editores pueden cambiarlos."); });
   use("db").then(function(d){
-    if(!d){ setStatus("Sin conexión", "err"); banner("No se pudo abrir la base de productos. Inicia sesión en Claude y vuelve a abrir el cargador."); $("list").innerHTML = '<p class="empty-list">Sin conexión.</p>'; return; }
+    if(!d){ setStatus("Sin conexión", "err"); banner("No se pudo abrir la base de productos. Recarga la página."); $("list").innerHTML = '<p class="empty-list">Sin conexión.</p>'; return; }
     db = d; col = db.collection("catalogo");
     col.onSnapshot(function(snap){
       products = snap.docs.map(function(doc){ var o = clone(doc.data() || {}); o.id = doc.id; return o; });

@@ -22,7 +22,7 @@ async function inicio(request, env){
     if(a < 0 || b < a) return new Response(html, res);
     let max = "";
     results.forEach(r => { if(r.publicado && r.publicado > max) max = r.publicado; });
-    const bloque = INI + " — en vivo desde el cargador (/admin). */\n  var CATALOGO_FECHA = " + JSON.stringify(max ? fecha(max) : "") +
+    const bloque = INI + " — en vivo desde el administrador de productos (/admin). */\n  var CATALOGO_FECHA = " + JSON.stringify(max ? fecha(max) : "") +
       ";\n  var CATALOGO = [\n    " + results.map(r => r.pub.replace(/<\//g, "<\\/")).join(",\n    ") + "\n  ];\n  ";
     const out = new Response(html.slice(0, a) + bloque + html.slice(b), res);
     out.headers.set("cache-control", "no-cache");
