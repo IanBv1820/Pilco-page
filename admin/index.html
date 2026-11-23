@@ -1117,7 +1117,7 @@ window.CF = (function(){
     db = d; col = db.collection("catalogo");
     col.onSnapshot(function(snap){
       products = snap.docs.map(function(doc){ var o = clone(doc.data() || {}); o.id = doc.id; return o; });
-      if(firstSnap){ firstSnap = false; setStatus(products.length ? "Listo" : "Sin productos"); }
+      if(firstSnap || (products.length && $("status").textContent === "Sin productos")){ firstSnap = false; setStatus(products.length ? "Listo" : "Sin productos"); }
       renderList(); datalists();
     }, function(){ setStatus("Sin conexión", "err"); banner("Se perdió la conexión con la base de productos. Recarga la página."); });
   });
