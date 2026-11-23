@@ -561,6 +561,17 @@ html.night .vt{--stage-hi:#2A2338;--floor:rgba(0,0,0,.5)}
 .ci.open .ci-ed svg{transform:rotate(180deg)}
 .ci-edit{display:flex;flex-direction:column;gap:12px;padding:4px 4px 16px}
 #builder-total{margin-top:2px}
+/* 22 nov 2026 (Ian): brillo al llegar al carrito (día celeste Rei, noche naranja Escudo AT) y basurero rojo (Asuka) */
+.cart-glow{--cg:#6CCBF5;animation:cartGlow .95s ease-out}
+.cart-glow.bump{animation:bump .5s cubic-bezier(.3,1.7,.5,1),cartGlow .95s ease-out}
+html.night .cart-glow{--cg:#FF8C1A}
+@keyframes cartGlow{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--cg) 0%,transparent)}25%{box-shadow:0 0 0 3px color-mix(in srgb,var(--cg) 38%,transparent),0 0 20px 3px color-mix(in srgb,var(--cg) 48%,transparent)}100%{box-shadow:0 0 0 10px color-mix(in srgb,var(--cg) 0%,transparent),0 0 30px 8px color-mix(in srgb,var(--cg) 0%,transparent)}}
+.hbar a.hbar-cart.cart-glow{animation:none}
+.hbar a.hbar-cart.cart-glow svg{animation:cartGlowIc .95s ease-out}
+@keyframes cartGlowIc{25%{color:var(--cg);filter:drop-shadow(0 0 7px var(--cg))}100%{filter:none}}
+.g-rm.rm-glow{color:#E8303A;border-color:#E8303A;background:color-mix(in srgb,#E8303A 14%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,#E8303A 25%,transparent),0 0 16px 2px color-mix(in srgb,#E8303A 40%,transparent);transition:all .15s}
+html.night .g-rm.rm-glow{color:#FF5A5F;border-color:#FF5A5F}
+.ci.ci-out{transition:opacity .25s .15s,transform .25s .15s;opacity:0;transform:translateX(16px)}
 .total{display:flex;justify-content:space-between;gap:12px;align-items:baseline;border-top:2px solid var(--sky-mid);padding-top:10px;font-weight:600}
 .total small{font-weight:400;color:var(--muted)}
 .total b{font-variant-numeric:tabular-nums;font-size:1.1rem}
@@ -5945,29 +5956,30 @@ html.night .ix-v-side{background:#2C323B}
     var pill = document.querySelector(".nav .pill");
     var bump = function(el){ if(!el) return; el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); };
     var b = btn && btn.isConnected ? btn.getBoundingClientRect() : null;
+    /* 22 nov 2026 (Ian): trayectoria parabólica de verdad (x pareja, y con la parábola) y al llegar el carrito se ilumina:
+       de noche naranja (Escudo AT), de día celeste (Rei) */
     setTimeout(function(){
-      var tgt = pill, r = pill.getBoundingClientRect();
-      if(r.bottom < 0 || r.top > innerHeight){ var tb = document.querySelector("#toast:not([hidden]) button"); if(tb){ tgt = tb; r = tb.getBoundingClientRect(); } }
-      if(!b || !b.width || !Element.prototype.animate || matchMedia("(prefers-reduced-motion: reduce)").matches){ bump(tgt); return; }
-      var x0 = b.left + b.width/2, y0 = b.top + b.height/2, x1 = r.left + r.width/2, y1 = r.top + r.height/2;
-      var peak = Math.max(14, Math.min(y0, y1) - Math.max(56, Math.abs(x1 - x0) * .12)) - y0, dur = 560; /* el arco nunca sale por arriba de la pantalla */
+      var vis = function(el){ if(!el) return null; var q = el.getBoundingClientRect(); return q.width && q.bottom > 0 && q.top < innerHeight ? el : null; };
+      var tgt = vis(pill) || vis(document.querySelector(".hbar-cart")) || vis(document.querySelector("#toast:not([hidden]) button")) || pill;
+      var r = tgt.getBoundingClientRect();
+      var glow = function(el){ bump(el); if(!el) return; el.classList.remove("cart-glow"); void el.offsetWidth; el.classList.add("cart-glow"); setTimeout(function(){ el.classList.remove("cart-glow"); }, 950); };
+      if(!b || !b.width || !r.width || !Element.prototype.animate || matchMedia("(prefers-reduced-motion: reduce)").matches){ glow(tgt); return; }
+      var x0 = b.left + b.width/2, y0 = b.top + b.height/2, x1 = r.left + r.width/2, y1 = r.top + r.height/2, dx = x1 - x0, dy = y1 - y0;
+      /* el punto más alto queda por encima de los dos extremos, sin salirse por arriba de la pantalla */
+      var top = Math.max(16, Math.min(y0, y1) - Math.max(70, Math.abs(dx) * .18)), h0 = y0 - top, h1 = y1 - top;
+      /* parábola y(t) = y0 + a·t² + c·t que pasa por el punto más alto: se resuelve el t del vértice */
+      var tv = Math.sqrt(h0) / (Math.sqrt(h0) + Math.sqrt(h1)), a = h0 / (tv * tv), c = -2 * a * tv;
+      var dur = Math.round(Math.min(900, Math.max(620, Math.hypot(dx, dy) * .7))), K = [], n = 36;
+      for(var i = 0; i <= n; i++){ var t = i / n; K.push({transform: "translate(" + (dx * t).toFixed(1) + "px," + (a * t * t + c * t).toFixed(1) + "px)"}); }
       var ball = document.createElement("div"); ball.className = "pp-ball"; ball.setAttribute("aria-hidden", "true");
       ball.innerHTML = "<span><i></i></span>"; ball.style.left = x0 + "px"; ball.style.top = y0 + "px";
       document.body.appendChild(ball);
-      var sp = ball.firstChild, dot = sp.firstChild;
-      /* carrito más abajo o a la misma altura: arco con caída; carrito arriba (PC): sube en curva y entra al carrito */
-      var sube = y1 < y0 - 80;
-      ball.animate([{transform:"translateX(0)"},{transform:"translateX("+(x1 - x0)+"px)"}], {duration:dur, easing:sube ? "cubic-bezier(.55,0,.85,.6)" : "linear", fill:"forwards"});
-      var fall = sp.animate(sube ? [
-        {transform:"translateY(0)", easing:"cubic-bezier(.2,.7,.3,1)"},
-        {transform:"translateY("+(y1 - y0)+"px)"}] : [
-        {transform:"translateY(0)", easing:"cubic-bezier(.2,.6,.35,1)"},
-        {transform:"translateY("+peak+"px)", offset:.42, easing:"cubic-bezier(.55,0,1,.45)"},
-        {transform:"translateY("+(y1 - y0)+"px)"}], {duration:dur, fill:"forwards"});
-      dot.animate([{transform:"scale(.6)"},{transform:"scale(1)", offset:.25},{transform:"scale(.9,1.15)"}], {duration:dur, fill:"forwards"});
-      fall.onfinish = function(){
-        bump(tgt);
-        var land = dot.animate([{transform:"scale(.9,1.15)", opacity:1},{transform:"scale(1.5,.55)", opacity:1, offset:.35},{transform:"scale(.7)", opacity:0}], {duration:220, easing:"ease-out", fill:"forwards"});
+      var dot = ball.firstChild.firstChild;
+      var fly = ball.firstChild.animate(K, {duration: dur, easing: "linear", fill: "forwards"});
+      dot.animate([{transform:"scale(.6)"},{transform:"scale(1)", offset:.2},{transform:"scale(.85)"}], {duration:dur, fill:"forwards"});
+      fly.onfinish = function(){
+        glow(tgt);
+        var land = dot.animate([{transform:"scale(.85)", opacity:1},{transform:"scale(1.4,.6)", opacity:1, offset:.35},{transform:"scale(.6)", opacity:0}], {duration:200, easing:"ease-out", fill:"forwards"});
         land.onfinish = function(){ ball.remove(); };
       };
     }, 0);
@@ -6411,7 +6423,12 @@ html.night .ix-v-side{background:#2C323B}
     var b = e.target.closest("button"); if(!b || b.disabled) return;
     var gi = +b.dataset.g, g = cart[gi]; if(!g) return;
     if(b.dataset.tog){ if(cartOpen[g.key]) delete cartOpen[g.key]; else cartOpen[g.key] = 1; renderGroups(); refocus('.ci-row[data-g="'+gi+'"]'); return; }
-    if(b.dataset.rm === "group"){ delete cartOpen[g.key]; cart.splice(gi, 1); save(); renderCart(); renderCatalog(); return; }
+    if(b.dataset.rm === "group"){
+      /* 22 nov 2026 (Ian): el basurero se ilumina de rojo (Asuka) y la fila se va; luego se borra */
+      if(b.classList.contains("rm-glow")) return;
+      var li0 = b.closest(".ci"), key0 = g.key, quitar = function(){ var k = cart.indexOf(g); if(k < 0) return; delete cartOpen[key0]; cart.splice(k, 1); save(); renderCart(); renderCatalog(); };
+      if(matchMedia("(prefers-reduced-motion: reduce)").matches){ quitar(); return; }
+      b.classList.add("rm-glow"); if(li0) li0.classList.add("ci-out"); setTimeout(quitar, 420); return; }
     if(b.dataset.more){ g.lines.push(newLine(ITEM[g.key], g.lines.map(function(l){ return l.sel && l.sel.c; }))); save(); renderCart(); refocus('.line[data-g="'+gi+'"][data-l="'+(g.lines.length-1)+'"] button, .line[data-g="'+gi+'"][data-l="'+(g.lines.length-1)+'"] select'); return; }
     var o = lineOf(b); if(!o || !o.ln) return;
     if(b.dataset.edit){ o.ln.edit = true; save(); renderCart(); refocus('.line[data-g="'+gi+'"][data-l="'+b.dataset.l+'"] button'); return; }
